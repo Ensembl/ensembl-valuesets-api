@@ -1,0 +1,98 @@
+[project]
+    name = "ensembl_valuesets"
+    dynamic = [
+        "version",
+    ]
+    requires-python = ">= 3.8"
+    description = "Ensembl ValueSets gRPC API"
+    readme = "README.md"
+    authors = [
+        {name = "Ensembl", email = "dev@ensembl.org"},
+    ]
+    license = { text = "Apache License 2.0" }
+    classifiers = [
+        "Development Status :: 3 - Alpha",
+        "Environment :: Console",
+        "Intended Audience :: Science/Research",
+        "License :: OSI Approved :: Apache Software License",
+        "Operating System :: OS Independent",
+        "Natural Language :: English",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
+        "Topic :: Scientific/Engineering :: Bio-Informatics",
+        "Topic :: Software Development :: Libraries :: Python Modules",
+    ]
+    dependencies = [
+        "grpcio",
+        "grpcio-tools >= 1.30",
+        "openpyxl >= 3.0",
+    ]
+
+[project.optional-dependencies]
+    dev = [
+        "black",
+        "ipython",
+        "mock",
+        "Sphinx",
+    ]
+    test = [
+        "pytest",
+        "pylint",
+        "mypy",
+        "coverage",
+        "mock",
+        "Sphinx",
+    ]
+    doc = [
+        "mock",
+        "Sphinx",
+    ]
+
+[project.urls]
+    homepage = "https://www.ensembl.org"
+    repository = "https://github.com/Ensembl/ensembl-valuesets"
+
+[project.scripts]
+    ens_vset_run = "ensembl.valuesets.valuesets:main"
+    ens_vset_makejson = "ensembl.utils.from_xlsx_to_json.py:main"
+    ens_vset_test_ok = "ensembl.utils.client:get_ok"
+    ens_vset_test_ko = "ensembl.utils.client:get_ko"
+
+[tool.setuptools]
+package-dir = {"" = "src/python"}
+
+[tool.setuptools.dynamic]
+version = {attr = "ensembl.valuesets.__version__"}
+
+[tool.setuptools.packages.find]
+where = ["src/python"]  # list of folders that contain the packages (["."] by default)
+
+[build-system]
+    requires = [
+        "setuptools",
+        "setuptools-scm",
+        "wheel"
+    ]
+    build-backend = "setuptools.build_meta"
+
+[tool.mypy]
+    mypy_path = "src/python"
+    ignore_missing_imports = true
+
+[tool.black]
+    line-length = 110
+
+[tool.coverage.run]
+    branch = true
+    source = [
+        "src/python",
+    ]
+
+[tool.pytest.ini_options]
+    addopts = "-v --tb=native --server=sqlite:///"
+    testpaths = ["src/python/tests"]
+    norecursedirs = ["data", "tmp*", "env", "docs", "apps", "basic_modules", "*.egg_info"]
+
