@@ -14,7 +14,7 @@
 #  limitations under the License.
 
 
-"""ValueSets module.
+"""ValueSets RPC Server.
 
 If executed as __main__ it will start a gRPC server, which allows to query EnsEMBL
 ValueSets data.
@@ -28,6 +28,8 @@ __all__ = [ ]
 from concurrent import futures
 import logging
 import signal
+import sys
+#from typing import Generator
 from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
 
 from pathlib import Path
@@ -43,7 +45,7 @@ vs_data_by_accession = {}
 
 class ValueSetGetter(ValueSetGetterServicer):
 
-    def GetValueSetByAccessionId(self, request, context):
+    def GetValueSetByAccessionId(self, request, context: grpc.ServicerContext) -> ValueSetResponse:
         """Retrieves a ValueSet by its accession ID.
 
         Args:
@@ -65,7 +67,7 @@ class ValueSetGetter(ValueSetGetterServicer):
         return ValueSetResponse(valuesets=(vset,))
 
 
-    def GetValueSetByValue(self, request, context):
+    def GetValueSetByValue(self, request, context: grpc.ServicerContext) -> ValueSetResponse:
         logging.info("Serving GetValueSetByValue request %s", request)
         context.abort(grpc.StatusCode.UNIMPLEMENTED, "")
 #        req_value = request.value
@@ -79,7 +81,7 @@ class ValueSetGetter(ValueSetGetterServicer):
 #                                description=description))
 #        return ValueSetResponse(valuesets=(vset,))
 
-    def GetValueSetStream(self, request, context):
+    def GetValueSetStream(self, request, context: grpc.ServicerContext) -> Generator[ValueSetResponse, None, None]:
         logging.info("Serving GetValueSetStream request %s", request)
         context.abort(grpc.StatusCode.UNIMPLEMENTED, "")
 
@@ -88,14 +90,21 @@ class GracefulKiller:
     def __init__(self, server):
         
         self._server = server
-        signal.signal(signal.SIGINT, self.exit_gracefully)
+        signal.signal(signal.SIGINT, self.sigint_handler)
         signal.signal(signal.SIGTERM, self.exit_gracefully)
 
+    def sigint_handler(self, args*):
+        logging.info("Received SIGINT. Shutting down ...")
+        self.exit_gracefully()
+
+    def sigterm_handler(self, args*):
+        logging.info("Received SIGTERM. Shutting down ...")
+        self.exit_gracefully()
+
     def exit_gracefully(self, *args):
-        logging.info("Shutting down...")
         done = self._server.stop(None)
         done.wait(None)
-        print('Stop complete.')
+        logging.info('Stop complete.')
 
 
 def get_server(port: str):
@@ -119,7 +128,6 @@ def load_vs_data_from_json(url: ParseResult):
         if not filename.exists() or not filename.is_file():
             logging.error(f'Provided input filename {url} does not exists or is not a file')
             raise ValueError(f'Provided input filename {url} does not exists or is not a file')
-        #load data
         with open(filename, 'rt') as fh:
             vs_data_by_accession = json.load(fh)
     else:
@@ -128,7 +136,6 @@ def load_vs_data_from_json(url: ParseResult):
         if not r.ok:
             logging.error(f'Request failed with code {r.status_code}')
             r.raise_for_status()
-        #load data
         vs_data_by_accession = r.json()
 
 
@@ -139,7 +146,11 @@ def main():
     parser.add_argument("--log-level", default="INFO", help="Log level")
     args = vars(parser.parse_args())
 
-    logging.basicConfig(level=args["log_level"])
+    logging.basicConfig(
+            stream=sys.stdout,
+            format="%(asctime)s %(levelname)-8s %(name)-15s: %(message)s",
+            level=args["log_level"],
+            )
 
     load_vs_data_from_json(urlparse(args["valuesets_url"]))
     if not vs_data_by_accession:
