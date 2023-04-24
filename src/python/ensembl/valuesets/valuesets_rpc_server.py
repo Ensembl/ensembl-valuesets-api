@@ -15,152 +15,179 @@
 
 
 """ValueSets RPC Server.
-
 If executed as __main__ it will start a gRPC server, which allows to query EnsEMBL
 ValueSets data.
 ValueSet is defined according to the EnsEMBL Core Data Model (CDM)
-
-
 """
 
-__all__ = [ ]
-
 from concurrent import futures
-import logging
-import signal
+from signal import signal, SIGINT, SIGTERM
 import sys
-#from typing import Generator
-from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
-
-from pathlib import Path
-from urllib.parse import ParseResult, urlparse
-import requests
-import json
+from typing import Generator
 
 import grpc
-from valuesets_pb2 import ValueSetResponse, ValueSetItem, CoreValueSetItem
-from valuesets_pb2_grpc import ValueSetGetterServicer, add_ValueSetGetterServicer_to_server
+from valuesets_pb2 import (
+        ValueSetResponse,
+        ValueSetItem,
+        CoreValueSetItem
+)
+from valuesets_pb2_grpc import(
+        ValueSetGetterServicer,
+        add_ValueSetGetterServicer_to_server
+)
+from ensembl.valuesets.config import Config, default_conf
+from ensembl.valuesets.valuesets_data import *
 
-vs_data_by_accession = {}
+_logger = None
+_config: Config = None
+_vs_data = None
 
 class ValueSetGetter(ValueSetGetterServicer):
+    """Provides methods that implement functionality of ValueSets RPC server"""
 
-    def GetValueSetByAccessionId(self, request, context: grpc.ServicerContext) -> ValueSetResponse:
-        """Retrieves a ValueSet by its accession ID.
+    def GetValueSetByAccessionId(
+            self, request, context: grpc.ServicerContext
+        ) -> ValueSetResponse:
+        """Retrieves a ValueSet by its accession ID."""
 
-        Args:
-            request (request): A string that is concatenated with "Hello "
+        _logger.info("Serving GetValueSetByAccessionId '%s'", str(request.accession_id).rstrip())
+        if not request.accession_id:
+            context.abort(grpc.StatusCode.INVALID_ARGUMENT, "accession_id invalid or None")
 
-        Returns:
-            A string that is the result of the concatenation between "Hello " and `word`
-        """
-        logging.info("Serving GetValueSetByAccessionId request %s", request)
-        req_acc_id = request.accession_id
-        if req_acc_id not in vs_data_by_accession.keys():
-            context.abort(grpc.StatusCode.NOT_FOUND, "Accession_id not found")
-        (label, value, definition, description) = vs_data_by_accession[req_acc_id]
-        vset = ValueSetItem(core_vset=CoreValueSetItem(accession_id=req_acc_id,
-                                label=label,
-                                value=value,
-                                definition=definition,
-                                description=description))
+        data = _vs_data.get_vsdata_by_accession_id(request.accession_id)
+        vset = ValueSetItem(core_vset=CoreValueSetItem(accession_id=data.accession_id,
+                                label=data.label,
+                                value=data.value,
+                                is_current=data.is_current,
+                                definition=data.definition,
+                                description=data.description))
         return ValueSetResponse(valuesets=(vset,))
 
 
-    def GetValueSetByValue(self, request, context: grpc.ServicerContext) -> ValueSetResponse:
-        logging.info("Serving GetValueSetByValue request %s", request)
-        context.abort(grpc.StatusCode.UNIMPLEMENTED, "")
-#        req_value = request.value
-#        if value not in valuesets_data.values()[1]:
-#            context.abort(grpc.StatusCode.NOT_FOUND, "Value not found")
-#        (label, value, definition, description) = vs_data_by_value[acc_id]
-#        vset = ValueSetItem(core_vset=CoreValueSetItem(accession_id=acc_id,
-#                                label=label,
-#                                value=value,
-#                                definition=definition,
-#                                description=description))
-#        return ValueSetResponse(valuesets=(vset,))
+    def GetValueSetsByValue(
+            self, request, context: grpc.ServicerContext
+        ) -> Generator[ValueSetResponse, None, None]:
+        """Retrieves a list of ValueSet by their Value."""
 
-    def GetValueSetStream(self, request, context: grpc.ServicerContext) -> Generator[ValueSetResponse, None, None]:
-        logging.info("Serving GetValueSetStream request %s", request)
-        context.abort(grpc.StatusCode.UNIMPLEMENTED, "")
-
-
-class GracefulKiller:
-    def __init__(self, server):
+        _logger.info("Serving GetValueSetsByValue '%s'", str(request.value).rstrip())
+        if not request.value:
+            context.abort(grpc.StatusCode.INVALID_ARGUMENT, "value invalid or None")
         
-        self._server = server
-        signal.signal(signal.SIGINT, self.sigint_handler)
-        signal.signal(signal.SIGTERM, self.exit_gracefully)
-
-    def sigint_handler(self, args*):
-        logging.info("Received SIGINT. Shutting down ...")
-        self.exit_gracefully()
-
-    def sigterm_handler(self, args*):
-        logging.info("Received SIGTERM. Shutting down ...")
-        self.exit_gracefully()
-
-    def exit_gracefully(self, *args):
-        done = self._server.stop(None)
-        done.wait(None)
-        logging.info('Stop complete.')
+        data = _vs_data.get_vsdata_by_value(value=request.value, is_current=request.is_current)
+        
+        vset = (ValueSetItem(core_vset=CoreValueSetItem(accession_id=datum.accession_id,
+                            label=datum.label,
+                            value=datum.value,
+                            is_current=datum.is_current,
+                            definition=datum.definition,
+                            description=datum.description)) for datum in data)
+        yield ValueSetResponse(valuesets=vset)
 
 
-def get_server(port: str):
-    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+    def GetValueSetsByDomain(
+            self, request, context: grpc.ServicerContext
+        ) -> Generator[ValueSetResponse, None, None]:
+        """Retrieves a list of ValueSet by their Domain."""
+
+        _logger.info("Serving GetValueSetsByDomain '%s'", str(request.domain).rstrip())
+        if not request.domain:
+            context.abort(grpc.StatusCode.INVALID_ARGUMENT, "value invalid or None")
+        
+        data = _vs_data.get_vsdata_by_domain(domain=request.domain, is_current=request.is_current)
+        
+        vset = (ValueSetItem(core_vset=CoreValueSetItem(accession_id=datum.accession_id,
+                            label=datum.label,
+                            value=datum.value,
+                            is_current=datum.is_current,
+                            definition=datum.definition,
+                            description=datum.description)) for datum in data)
+        yield ValueSetResponse(valuesets=vset)
+
+
+    def GetValueSetStream(
+            self, request, context: grpc.ServicerContext
+        ) -> Generator[ValueSetResponse, None, None]:
+        """Retrieves the entire ValueSet list"""
+
+        curr_s = 'current ' if request.is_current else ''
+        _logger.info("Serving GetValueSetStream for %sValuesets", curr_s)
+        
+        data = _vs_data.get_all(request.is_current)
+        
+        vset = (ValueSetItem(core_vset=CoreValueSetItem(accession_id=datum.accession_id,
+                            label=datum.label,
+                            value=datum.value,
+                            is_current=datum.is_current,
+                            definition=datum.definition,
+                            description=datum.description)) for datum in data)
+        yield ValueSetResponse(valuesets=vset)
+
+
+def exit_gracefully(server):
+    done = server.stop(_config.stop_timeout)
+    done.wait(_config.stop_timeout)
+
+
+def serve():
+    _logger.info(_config)
+
+    server = grpc.server(futures.ThreadPoolExecutor(max_workers=_config.max_workers))
+    
+    def sigint_handler(_signum, _frame):
+        _logger.info("Received SIGINT. Shutting down ...")
+        exit_gracefully()
+
+    def sigterm_handler(_signum, _frame):
+        _logger.info("Received SIGTERM. Shutting down ...")
+        exit_gracefully()
+
+    signal(SIGINT, sigint_handler)
+    signal(SIGTERM, sigterm_handler)
+
     add_ValueSetGetterServicer_to_server(ValueSetGetter(), server)
-    listen_address = f'[::]:{port}'
+
+    listen_address = f'[::]:{_config.server_port}'
     server.add_insecure_port(listen_address)
-    logging.info("Starting server on %s", listen_address)
-    return server
+    _logger.debug("Starting server on %s", listen_address)
+    server.start()
+
+    server.wait_for_termination()
+    _logger.info('Stop complete.')
 
 
-def load_vs_data_from_json(url: ParseResult):
-    if url.scheme not in ('file', 'http', 'https'):
-        logging.error('Invalid scheme for valuesets URL; must be "file", "http", "https"')
-        raise ValueError(f'Invalid scheme for valuesets URL; must be "file", "http", "https"')
-
-    global vs_data_by_accession
-    if url.scheme == 'file':
-        logging.info(f'Loading JSON from file URL: {url.geturl()}')
-        filename = Path(url.netloc) / Path(url.path)
-        if not filename.exists() or not filename.is_file():
-            logging.error(f'Provided input filename {url} does not exists or is not a file')
-            raise ValueError(f'Provided input filename {url} does not exists or is not a file')
-        with open(filename, 'rt') as fh:
-            vs_data_by_accession = json.load(fh)
+def init_logger(logger=None):
+    global _logger
+    if logger is not None:
+        _logger = logger
     else:
-        logging.info(f'Loading JSON from http(s) URL: {url.geturl()}')
-        r = requests.get(url.geturl(), headers={ "Content-Type" : "application/json"})
-        if not r.ok:
-            logging.error(f'Request failed with code {r.status_code}')
-            r.raise_for_status()
-        vs_data_by_accession = r.json()
-
-
-def main():
-    parser = ArgumentParser(formatter_class=ArgumentDefaultsHelpFormatter)
-    parser.add_argument("-p", "--port", default="50051", help="Server port")
-    parser.add_argument("--valuesets-url", default="https://raw.githubusercontent.com/sgiorgetti/test-valuesets/main/valuesets.json", help="URL to valuesets JSON file")
-    parser.add_argument("--log-level", default="INFO", help="Log level")
-    args = vars(parser.parse_args())
-
-    logging.basicConfig(
+        import logging
+        logging.basicConfig(
             stream=sys.stdout,
             format="%(asctime)s %(levelname)-8s %(name)-15s: %(message)s",
-            level=args["log_level"],
-            )
+            level=logging.DEBUG if _config.debug else logging.INFO,
+        )
+        _logger = logging.getLogger('valuesets_rpc')
 
-    load_vs_data_from_json(urlparse(args["valuesets_url"]))
-    if not vs_data_by_accession:
-        logging.error(f'Something went wrong with loading the ValueSets: cache is empty')
-        raise Exception(f'Something went wrong with loading the ValueSets: cache is empty')
 
-    server = get_server(args["port"])
-    server.start()
-    GracefulKiller(server)
-    server.wait_for_termination()
+def init_config(config: Config):
+    if not config:
+        raise ValueError('Invalid argument "config"')
+    global _config
+    if _config and _config != config:
+        raise Exception('Found existing config in module'
+                        '"init_config" can be invoked only once.'
+              )
+    _config = config
+
+
+def main(logger = None, config: Config = default_conf):
+    init_config(config)
+    init_logger(logger)
+    global _vs_data
+    global _config
+    global _logger
+    _vs_data = ValueSetData(_config, _logger, autoload=True)
+    serve()
 
 
 if __name__ == '__main__':

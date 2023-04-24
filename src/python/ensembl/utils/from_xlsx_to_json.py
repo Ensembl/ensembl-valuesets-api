@@ -25,11 +25,9 @@ and columns such as
 Accession_ID, label, value, colD(unused), colE(unused), definition, description
 """
 
-__all__ = [ 'main' ]
+__all__ = ["main"]
 
-from openpyxl import Workbook as wb
 from openpyxl import load_workbook
-from openpyxl.worksheet.table import Table, TableStyleInfo
 
 import json
 from pathlib import Path
@@ -38,10 +36,10 @@ import logging
 from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
 
 
-def read_xlsx(filename: Path, sheet_name: str = 'Master') -> dict[str,tuple]:
+def read_xlsx(filename: Path, sheet_name: str = "Master") -> dict[str, tuple]:
     """Reads data from an Excel spreadsheet (one named sheet),
     and creates a dictionary out of these.
-    
+
     One column (accession) is supposed to be the unique identifier of
     a valueset, which is entirely described by the row in the sheet.
 
@@ -55,31 +53,31 @@ def read_xlsx(filename: Path, sheet_name: str = 'Master') -> dict[str,tuple]:
     """
     if not filename or not filename.is_file():
         logging.error("Invalid filename provided - not a file or not found")
-        raise ValueError(f'Invalid filename, pls check')
+        raise ValueError(f"Invalid filename, pls check")
     logging.info("Called read_xlsx for file %s", filename)
     wb = load_workbook(filename)
     logging.debug(f"The number of worksheets is {len(wb.worksheets)}")
     logging.debug(f"Worksheet name(s): {wb.worksheets}")
     logging.debug(f"Selecting Worksheet {sheet_name}")
-    wsheet = wb[f'{sheet_name}']
-    logging.debug(f'Now in sheet: {wsheet.title}')
+    wsheet = wb[f"{sheet_name}"]
+    logging.debug(f"Now in sheet: {wsheet.title}")
 
     data = {}
     for row in wsheet.rows:
-        vals = [ str(c.value).strip() if c.value else '' for c in row ][0:7]
-        logging.debug(f'Found row: {vals}')
+        vals = [str(c.value).strip() if c.value else "" for c in row][0:7]
+        logging.debug(f"Found row: {vals}")
         # Removing cols D and E, which are unused as of mid-Apr 2023
         del vals[3:5]
         # Remaining fields are
         # Accession_ID, label, value, definition, description
         data[vals[0]] = tuple(vals[1:])
 
-    data.pop('Accession_ID', None)
+    data.pop("Accession_ID", None)
 
     return data
 
 
-def dump_data_to_json(data: dict, out_filename: Path = Path('out.json')):
+def dump_data_to_json(data: dict, out_filename: Path = Path("out.json")):
     """Dumps dictionary data into JSON file.
 
     Args:
@@ -89,26 +87,28 @@ def dump_data_to_json(data: dict, out_filename: Path = Path('out.json')):
     Returns:
         None
     """
-    with open(out_filename, 'wt') as fh:
+    with open(out_filename, "wt") as fh:
         json.dump(data, fh, indent=4)
+
 
 def main():
     parser = ArgumentParser(formatter_class=ArgumentDefaultsHelpFormatter)
     parser.add_argument("filename", help="Input Excel workbook filename")
     parser.add_argument("-s", "--sheet", default="Master", help="Input Excel sheet (default: Master)")
-    parser.add_argument("-o", "--out-filename", default="valuesets.json", help="Output JSON filename (default: out.json)")
+    parser.add_argument(
+        "-o", "--out-filename", default="valuesets.json", help="Output JSON filename (default: out.json)"
+    )
     parser.add_argument("--log-level", default="INFO", help="Log level")
     args = parser.parse_args()
     logging.basicConfig(level=args.log_level)
 
     if not args.filename:
-        raise ValueError(f'Missing argument filename')
-    
+        raise ValueError(f"Missing argument filename")
+
     xlsx_data = read_xlsx(Path(args.filename), args.sheet)
 
     dump_data_to_json(xlsx_data, args.out_filename)
 
 
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

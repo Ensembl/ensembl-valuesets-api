@@ -1,0 +1,8 @@
+{
+    "python.analysis.extraPaths": [
+        "/home/stefano/ensembl-valuesets/src/python"
+    ],
+    "terminal.integrated.env.linux": {
+        "PYTHONPATH": "/home/stefano/ensembl-valuesets/src/python"
+    }
+}

@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x0fvaluesets.proto\"\xb6\x01\n\x10\x43oreValueSetItem\x12\x14\n\x0c\x61\x63\x63\x65ssion_id\x18\x01 \x01(\t\x12\x12\n\x05label\x18\x02 \x01(\tH\x00\x88\x01\x01\x12\x12\n\x05value\x18\x03 \x01(\tH\x01\x88\x01\x01\x12\x17\n\ndefinition\x18\x04 \x01(\tH\x02\x88\x01\x01\x12\x18\n\x0b\x64\x65scription\x18\x05 \x01(\tH\x03\x88\x01\x01\x42\x08\n\x06_labelB\x08\n\x06_valueB\r\n\x0b_definitionB\x0e\n\x0c_description\"K\n\x15VariationValueSetItem\x12\x14\n\x0c\x61\x63\x63\x65ssion_id\x18\x01 \x01(\t\x12\x12\n\x05label\x18\x02 \x01(\tH\x00\x88\x01\x01\x42\x08\n\x06_label\"q\n\x0cValueSetItem\x12&\n\tcore_vset\x18\x01 \x01(\x0b\x32\x11.CoreValueSetItemH\x00\x12)\n\x07var_set\x18\x02 \x01(\x0b\x32\x16.VariationValueSetItemH\x00\x42\x0e\n\x0cValueSetItem\"4\n\x10ValueSetResponse\x12 \n\tvaluesets\x18\x01 \x03(\x0b\x32\r.ValueSetItem\"\x90\x01\n\x16ValueSetRequestOptions\x12@\n\tread_mask\x18\x01 \x01(\x0b\x32(.ValueSetRequestOptions.ValueSetReadMaskH\x00\x88\x01\x01\x1a&\n\x10ValueSetReadMask\x12\x12\n\nfield_name\x18\x01 \x03(\tB\x0c\n\n_read_mask\"\x94\x01\n\x0fValueSetRequest\x12\x19\n\x0c\x61\x63\x63\x65ssion_id\x18\x01 \x01(\tH\x00\x88\x01\x01\x12\x12\n\x05value\x18\x02 \x01(\tH\x01\x88\x01\x01\x12,\n\x06params\x18\x03 \x01(\x0b\x32\x17.ValueSetRequestOptionsH\x02\x88\x01\x01\x42\x0f\n\r_accession_idB\x08\n\x06_valueB\t\n\x07_params2Q\n\x0eValueSetGetter\x12?\n\x18GetValueSetByAccessionId\x12\x10.ValueSetRequest\x1a\x11.ValueSetResponseb\x06proto3'
+  serialized_pb=b'\n\x0fvaluesets.proto\"\xde\x01\n\x10\x43oreValueSetItem\x12\x14\n\x0c\x61\x63\x63\x65ssion_id\x18\x01 \x01(\t\x12\x12\n\x05label\x18\x02 \x01(\tH\x00\x88\x01\x01\x12\x12\n\x05value\x18\x03 \x01(\tH\x01\x88\x01\x01\x12\x17\n\nis_current\x18\x04 \x01(\x08H\x02\x88\x01\x01\x12\x17\n\ndefinition\x18\x05 \x01(\tH\x03\x88\x01\x01\x12\x18\n\x0b\x64\x65scription\x18\x06 \x01(\tH\x04\x88\x01\x01\x42\x08\n\x06_labelB\x08\n\x06_valueB\r\n\x0b_is_currentB\r\n\x0b_definitionB\x0e\n\x0c_description\"K\n\x15VariationValueSetItem\x12\x14\n\x0c\x61\x63\x63\x65ssion_id\x18\x01 \x01(\t\x12\x12\n\x05label\x18\x02 \x01(\tH\x00\x88\x01\x01\x42\x08\n\x06_label\"q\n\x0cValueSetItem\x12&\n\tcore_vset\x18\x01 \x01(\x0b\x32\x11.CoreValueSetItemH\x00\x12)\n\x07var_set\x18\x02 \x01(\x0b\x32\x16.VariationValueSetItemH\x00\x42\x0e\n\x0cValueSetItem\"4\n\x10ValueSetResponse\x12 \n\tvaluesets\x18\x01 \x03(\x0b\x32\r.ValueSetItem\"\x90\x01\n\x16ValueSetRequestOptions\x12@\n\tread_mask\x18\x01 \x01(\x0b\x32(.ValueSetRequestOptions.ValueSetReadMaskH\x00\x88\x01\x01\x1a&\n\x10ValueSetReadMask\x12\x12\n\nfield_name\x18\x01 \x03(\tB\x0c\n\n_read_mask\"\xbc\x01\n\x0fValueSetRequest\x12\x19\n\x0c\x61\x63\x63\x65ssion_id\x18\x01 \x01(\tH\x00\x88\x01\x01\x12\x12\n\x05value\x18\x02 \x01(\tH\x01\x88\x01\x01\x12\x17\n\nis_current\x18\x03 \x01(\x08H\x02\x88\x01\x01\x12,\n\x06params\x18\x04 \x01(\x0b\x32\x17.ValueSetRequestOptionsH\x03\x88\x01\x01\x42\x0f\n\r_accession_idB\x08\n\x06_valueB\r\n\x0b_is_currentB\t\n\x07_params2\x8a\x02\n\x0eValueSetGetter\x12?\n\x18GetValueSetByAccessionId\x12\x10.ValueSetRequest\x1a\x11.ValueSetResponse\x12<\n\x13GetValueSetsByValue\x12\x10.ValueSetRequest\x1a\x11.ValueSetResponse0\x01\x12=\n\x14GetValueSetsByDomain\x12\x10.ValueSetRequest\x1a\x11.ValueSetResponse0\x01\x12:\n\x11GetValueSetStream\x12\x10.ValueSetRequest\x1a\x11.ValueSetResponse0\x01\x62\x06proto3'
 )
 
 
@@ -55,15 +55,22 @@ _COREVALUESETITEM = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='definition', full_name='CoreValueSetItem.definition', index=3,
-      number=4, type=9, cpp_type=9, label=1,
+      name='is_current', full_name='CoreValueSetItem.is_current', index=3,
+      number=4, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='definition', full_name='CoreValueSetItem.definition', index=4,
+      number=5, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='description', full_name='CoreValueSetItem.description', index=4,
-      number=5, type=9, cpp_type=9, label=1,
+      name='description', full_name='CoreValueSetItem.description', index=5,
+      number=6, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -90,18 +97,23 @@ _COREVALUESETITEM = _descriptor.Descriptor(
       create_key=_descriptor._internal_create_key,
     fields=[]),
     _descriptor.OneofDescriptor(
-      name='_definition', full_name='CoreValueSetItem._definition',
+      name='_is_current', full_name='CoreValueSetItem._is_current',
       index=2, containing_type=None,
       create_key=_descriptor._internal_create_key,
     fields=[]),
     _descriptor.OneofDescriptor(
-      name='_description', full_name='CoreValueSetItem._description',
+      name='_definition', full_name='CoreValueSetItem._definition',
       index=3, containing_type=None,
+      create_key=_descriptor._internal_create_key,
+    fields=[]),
+    _descriptor.OneofDescriptor(
+      name='_description', full_name='CoreValueSetItem._description',
+      index=4, containing_type=None,
       create_key=_descriptor._internal_create_key,
     fields=[]),
   ],
   serialized_start=20,
-  serialized_end=202,
+  serialized_end=242,
 )
 
 
@@ -144,8 +156,8 @@ _VARIATIONVALUESETITEM = _descriptor.Descriptor(
       create_key=_descriptor._internal_create_key,
     fields=[]),
   ],
-  serialized_start=204,
-  serialized_end=279,
+  serialized_start=244,
+  serialized_end=319,
 )
 
 
@@ -188,8 +200,8 @@ _VALUESETITEM = _descriptor.Descriptor(
       create_key=_descriptor._internal_create_key,
     fields=[]),
   ],
-  serialized_start=281,
-  serialized_end=394,
+  serialized_start=321,
+  serialized_end=434,
 )
 
 
@@ -220,8 +232,8 @@ _VALUESETRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=396,
-  serialized_end=448,
+  serialized_start=436,
+  serialized_end=488,
 )
 
 
@@ -252,8 +264,8 @@ _VALUESETREQUESTOPTIONS_VALUESETREADMASK = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=543,
-  serialized_end=581,
+  serialized_start=583,
+  serialized_end=621,
 )
 
 _VALUESETREQUESTOPTIONS = _descriptor.Descriptor(
@@ -288,8 +300,8 @@ _VALUESETREQUESTOPTIONS = _descriptor.Descriptor(
       create_key=_descriptor._internal_create_key,
     fields=[]),
   ],
-  serialized_start=451,
-  serialized_end=595,
+  serialized_start=491,
+  serialized_end=635,
 )
 
 
@@ -316,8 +328,15 @@ _VALUESETREQUEST = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='params', full_name='ValueSetRequest.params', index=2,
-      number=3, type=11, cpp_type=10, label=1,
+      name='is_current', full_name='ValueSetRequest.is_current', index=2,
+      number=3, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='params', full_name='ValueSetRequest.params', index=3,
+      number=4, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -344,13 +363,18 @@ _VALUESETREQUEST = _descriptor.Descriptor(
       create_key=_descriptor._internal_create_key,
     fields=[]),
     _descriptor.OneofDescriptor(
-      name='_params', full_name='ValueSetRequest._params',
+      name='_is_current', full_name='ValueSetRequest._is_current',
       index=2, containing_type=None,
       create_key=_descriptor._internal_create_key,
     fields=[]),
+    _descriptor.OneofDescriptor(
+      name='_params', full_name='ValueSetRequest._params',
+      index=3, containing_type=None,
+      create_key=_descriptor._internal_create_key,
+    fields=[]),
   ],
-  serialized_start=598,
-  serialized_end=746,
+  serialized_start=638,
+  serialized_end=826,
 )
 
 _COREVALUESETITEM.oneofs_by_name['_label'].fields.append(
@@ -359,6 +383,9 @@ _COREVALUESETITEM.fields_by_name['label'].containing_oneof = _COREVALUESETITEM.o
 _COREVALUESETITEM.oneofs_by_name['_value'].fields.append(
   _COREVALUESETITEM.fields_by_name['value'])
 _COREVALUESETITEM.fields_by_name['value'].containing_oneof = _COREVALUESETITEM.oneofs_by_name['_value']
+_COREVALUESETITEM.oneofs_by_name['_is_current'].fields.append(
+  _COREVALUESETITEM.fields_by_name['is_current'])
+_COREVALUESETITEM.fields_by_name['is_current'].containing_oneof = _COREVALUESETITEM.oneofs_by_name['_is_current']
 _COREVALUESETITEM.oneofs_by_name['_definition'].fields.append(
   _COREVALUESETITEM.fields_by_name['definition'])
 _COREVALUESETITEM.fields_by_name['definition'].containing_oneof = _COREVALUESETITEM.oneofs_by_name['_definition']
@@ -389,6 +416,9 @@ _VALUESETREQUEST.fields_by_name['accession_id'].containing_oneof = _VALUESETREQU
 _VALUESETREQUEST.oneofs_by_name['_value'].fields.append(
   _VALUESETREQUEST.fields_by_name['value'])
 _VALUESETREQUEST.fields_by_name['value'].containing_oneof = _VALUESETREQUEST.oneofs_by_name['_value']
+_VALUESETREQUEST.oneofs_by_name['_is_current'].fields.append(
+  _VALUESETREQUEST.fields_by_name['is_current'])
+_VALUESETREQUEST.fields_by_name['is_current'].containing_oneof = _VALUESETREQUEST.oneofs_by_name['_is_current']
 _VALUESETREQUEST.oneofs_by_name['_params'].fields.append(
   _VALUESETREQUEST.fields_by_name['params'])
 _VALUESETREQUEST.fields_by_name['params'].containing_oneof = _VALUESETREQUEST.oneofs_by_name['_params']
@@ -459,13 +489,43 @@ _VALUESETGETTER = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=748,
-  serialized_end=829,
+  serialized_start=829,
+  serialized_end=1095,
   methods=[
   _descriptor.MethodDescriptor(
     name='GetValueSetByAccessionId',
     full_name='ValueSetGetter.GetValueSetByAccessionId',
     index=0,
+    containing_service=None,
+    input_type=_VALUESETREQUEST,
+    output_type=_VALUESETRESPONSE,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='GetValueSetsByValue',
+    full_name='ValueSetGetter.GetValueSetsByValue',
+    index=1,
+    containing_service=None,
+    input_type=_VALUESETREQUEST,
+    output_type=_VALUESETRESPONSE,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='GetValueSetsByDomain',
+    full_name='ValueSetGetter.GetValueSetsByDomain',
+    index=2,
+    containing_service=None,
+    input_type=_VALUESETREQUEST,
+    output_type=_VALUESETRESPONSE,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='GetValueSetStream',
+    full_name='ValueSetGetter.GetValueSetStream',
+    index=3,
     containing_service=None,
     input_type=_VALUESETREQUEST,
     output_type=_VALUESETRESPONSE,

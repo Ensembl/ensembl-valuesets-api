@@ -30,11 +30,14 @@ message CoreValueSetItem {
     // This should be lowercase and snake_case - e.g. "protein_coding_gene"
     optional string value = 3; 
 
+    // Optional field containing a flag to state whether ValueSet is current or not
+    optional bool is_current = 4;
+
     // Optional field containing a short description of the ValueSet item
-    optional string definition = 4;
+    optional string definition = 5;
 
     // Optional field containing a more verbose definition of the ValueSet item
-    optional string description = 5;
+    optional string description = 6;
 }
 
 
@@ -80,13 +83,15 @@ message ValueSetRequest {
     // ValueSet has been deleted, the response will be empty but will succeed.
     optional string accession_id = 1;
     optional string value = 2;
+    optional bool is_current = 3;
 
-    optional ValueSetRequestOptions params = 3;
+    optional ValueSetRequestOptions params = 4;
 }
 
 
 service ValueSetGetter {
     rpc GetValueSetByAccessionId (ValueSetRequest) returns (ValueSetResponse);
-//    rpc GetValueSetByValue (ValueSetRequest) returns (ValueSetResponse);
-//    rpc GetValueSetStream (ValueSetRequest) returns (stream ValueSetResponse);
+    rpc GetValueSetsByValue (ValueSetRequest) returns (stream ValueSetResponse);
+    rpc GetValueSetsByDomain (ValueSetRequest) returns (stream ValueSetResponse);
+    rpc GetValueSetStream (ValueSetRequest) returns (stream ValueSetResponse);
 }
