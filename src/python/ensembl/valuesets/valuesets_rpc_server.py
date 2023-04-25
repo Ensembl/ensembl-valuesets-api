@@ -28,8 +28,7 @@ from typing import Generator
 import grpc
 from valuesets_pb2 import (
         ValueSetResponse,
-        ValueSetItem,
-        CoreValueSetItem
+        ValueSetItem
 )
 from valuesets_pb2_grpc import(
         ValueSetGetterServicer,
@@ -55,12 +54,16 @@ class ValueSetGetter(ValueSetGetterServicer):
             context.abort(grpc.StatusCode.INVALID_ARGUMENT, "accession_id invalid or None")
 
         data = _vs_data.get_vsdata_by_accession_id(request.accession_id)
-        vset = ValueSetItem(core_vset=CoreValueSetItem(accession_id=data.accession_id,
+        
+        if not data:
+            return ValueSetResponse(valuesets=())
+        
+        vset = ValueSetItem(accession_id=data.accession_id,
                                 label=data.label,
                                 value=data.value,
                                 is_current=data.is_current,
                                 definition=data.definition,
-                                description=data.description))
+                                description=data.description)
         return ValueSetResponse(valuesets=(vset,))
 
 
@@ -74,13 +77,16 @@ class ValueSetGetter(ValueSetGetterServicer):
             context.abort(grpc.StatusCode.INVALID_ARGUMENT, "value invalid or None")
         
         data = _vs_data.get_vsdata_by_value(value=request.value, is_current=request.is_current)
+
+        if not data:
+            return ValueSetResponse(valuesets=())
         
-        vset = (ValueSetItem(core_vset=CoreValueSetItem(accession_id=datum.accession_id,
+        vset = (ValueSetItem(accession_id=datum.accession_id,
                             label=datum.label,
                             value=datum.value,
                             is_current=datum.is_current,
                             definition=datum.definition,
-                            description=datum.description)) for datum in data)
+                            description=datum.description) for datum in data)
         yield ValueSetResponse(valuesets=vset)
 
 
@@ -89,18 +95,21 @@ class ValueSetGetter(ValueSetGetterServicer):
         ) -> Generator[ValueSetResponse, None, None]:
         """Retrieves a list of ValueSet by their Domain."""
 
-        _logger.info("Serving GetValueSetsByDomain '%s'", str(request.domain).rstrip())
-        if not request.domain:
+        _logger.info("Serving GetValueSetsByDomain '%s'", str(request.accession_id).rstrip())
+        if not request.accession_id:
             context.abort(grpc.StatusCode.INVALID_ARGUMENT, "value invalid or None")
         
-        data = _vs_data.get_vsdata_by_domain(domain=request.domain, is_current=request.is_current)
+        data = _vs_data.get_vsdata_by_domain(domain=request.accession_id, is_current=request.is_current)
+
+        if not data:
+            return ValueSetResponse(valuesets=())
         
-        vset = (ValueSetItem(core_vset=CoreValueSetItem(accession_id=datum.accession_id,
+        vset = (ValueSetItem(accession_id=datum.accession_id,
                             label=datum.label,
                             value=datum.value,
                             is_current=datum.is_current,
                             definition=datum.definition,
-                            description=datum.description)) for datum in data)
+                            description=datum.description) for datum in data)
         yield ValueSetResponse(valuesets=vset)
 
 
@@ -113,13 +122,16 @@ class ValueSetGetter(ValueSetGetterServicer):
         _logger.info("Serving GetValueSetStream for %sValuesets", curr_s)
         
         data = _vs_data.get_all(request.is_current)
+
+        if not data:
+            return ValueSetResponse(valuesets=())
         
-        vset = (ValueSetItem(core_vset=CoreValueSetItem(accession_id=datum.accession_id,
+        vset = (ValueSetItem(accession_id=datum.accession_id,
                             label=datum.label,
                             value=datum.value,
                             is_current=datum.is_current,
                             definition=datum.definition,
-                            description=datum.description)) for datum in data)
+                            description=datum.description) for datum in data)
         yield ValueSetResponse(valuesets=vset)
 
 
@@ -135,11 +147,11 @@ def serve():
     
     def sigint_handler(_signum, _frame):
         _logger.info("Received SIGINT. Shutting down ...")
-        exit_gracefully()
+        exit_gracefully(server)
 
     def sigterm_handler(_signum, _frame):
         _logger.info("Received SIGTERM. Shutting down ...")
-        exit_gracefully()
+        exit_gracefully(server)
 
     signal(SIGINT, sigint_handler)
     signal(SIGTERM, sigterm_handler)

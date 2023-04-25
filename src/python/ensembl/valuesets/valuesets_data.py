@@ -65,7 +65,7 @@ class ValueSetData():
     
 
     def load_data(self) -> None:
-        data = self.fetch_vs_data_from_json(self._config.json_url)
+        data = self.fetch_vs_data_from_json(self._config.vset_source)
         self._load_data_into_cache(data)
 
 
@@ -99,7 +99,7 @@ class ValueSetData():
     def fetch_vs_data_from_json(self, url: ParseResult = None) -> dict[str,tuple[str]]:
         """Fetch ValueSets from external JSON file"""
         if not url:
-            url = self._config.json_url
+            url = self._config.vset_source
         if url.scheme not in ('file', 'http', 'https'):
             self._logger.error('Invalid scheme for valuesets URL; must be "file", "http", "https"')
             raise ValueError('Invalid scheme for valuesets URL; must be "file", "http", "https"')
@@ -150,7 +150,7 @@ class ValueSetData():
         self._logger.debug("Getting %s ValueSet data by domain %s", curr_s, domain)
         if is_current:
             vs = self._data.loc[
-                (self._data["accession_id"].str.contains(domain)) 
+                (self._data["accession_id"].str.startswith(domain)) 
                 & (self._data["is_current"] == is_current)
             ]
         else:

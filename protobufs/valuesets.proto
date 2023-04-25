@@ -16,7 +16,7 @@
 syntax = "proto3";
 
 // Client-facing representation of a core ValueSet item (from CDM) exposed in APIs.
-message CoreValueSetItem {
+message ValueSetItem {
     
     // Required field identifying the ValueSet
     // This has the format `topic`.`unique_identifier` - e.g. mane.select
@@ -38,24 +38,6 @@ message CoreValueSetItem {
 
     // Optional field containing a more verbose definition of the ValueSet item
     optional string description = 6;
-}
-
-
-// Client-facing representation of a variation ValueSet item (from VDM) exposed in APIs.
-// This is hypothetical and defined for flexibility purposes.
-// May disappear in a not-so-far future
-message VariationValueSetItem {
-    string accession_id = 1;
-    optional string label = 2;
-}
-
-
-// // Client-facing representation of a ValueSet item, regardless of the type CDM/VDM, exposed in APIs.
-message ValueSetItem {
-    oneof ValueSetItem {
-        CoreValueSetItem core_vset = 1;
-        VariationValueSetItem var_set = 2;
-    }
 }
 
 

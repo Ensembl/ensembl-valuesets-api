@@ -11,9 +11,9 @@
             "program": "${file}",
             "console": "integratedTerminal",
             "env": {
-                "PYTHONPATH": "/home/stefano/ensembl-valuesets/src/python"
+                "PYTHONPATH": "/home/stefano/ensembl-valuesets/src/python:/home/stefano/ensembl-valuesets/src/python/ensembl/valuesets"
             },
-            "justMyCode": true
+            "justMyCode": true,
         }
     ]
 }

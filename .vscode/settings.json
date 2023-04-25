@@ -3,6 +3,6 @@
         "/home/stefano/ensembl-valuesets/src/python"
     ],
     "terminal.integrated.env.linux": {
-        "PYTHONPATH": "/home/stefano/ensembl-valuesets/src/python"
+        "PYTHONPATH": "/home/stefano/ensembl-valuesets/src/python:/home/stefano/ensembl-valuesets/src/python/ensembl/valuesets"
     }
 }

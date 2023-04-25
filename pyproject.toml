@@ -29,6 +29,7 @@
         "grpcio",
         "grpcio-tools >= 1.30",
         "openpyxl >= 3.0",
+        "typer >= 0.7"
     ]
 
 [project.optional-dependencies]

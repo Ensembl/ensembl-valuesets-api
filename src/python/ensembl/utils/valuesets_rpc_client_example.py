@@ -15,28 +15,59 @@
 """Ensembl ValueSets client example."""
 
 import grpc
-from valuesets_pb2 import ValueSetRequest
-from valuesets_pb2_grpc import ValueSetGetterStub
+from ensembl.valuesets.valuesets_pb2 import ValueSetRequest
+from ensembl.valuesets.valuesets_pb2_grpc import ValueSetGetterStub
 
 from typer import Typer
 
-client = Typer()
+client_app = Typer()
+
 
 def init_client():
     channel = grpc.insecure_channel("localhost:50051")
     return ValueSetGetterStub(channel)
 
-@client.command()
+
+@client_app.command()
 def get_ok():
     client = init_client()
-    request = ValueSetRequest(accession_id='mane.select')
+    request = ValueSetRequest(accession_id="mane.select")
     print(client.GetValueSetByAccessionId(request))
 
-@client.command()
+
+@client_app.command()
 def get_ko():
     client = init_client()
-    request = ValueSetRequest(accession_id='foobar')
+    request = ValueSetRequest(accession_id="foobar")
     print(client.GetValueSetByAccessionId(request))
+
+
+@client_app.command()
+def get_vs_by_accession(accession_id: str):
+    client = init_client()
+    request = ValueSetRequest(accession_id=accession_id)
+    print(client.GetValueSetByAccessionId(request))
+
+
+@client_app.command()
+def get_vs_by_value(value: str, is_current: bool = True):
+    client = init_client()
+    request = ValueSetRequest(value=value, is_current=is_current)
+    for vs in client.GetValueSetsByValue(request):
+        print(vs)
+
+
+@client_app.command()
+def get_vs_by_domain(domain: str, is_current: bool = True):
+    client = init_client()
+    request = ValueSetRequest(accession_id=domain, is_current=is_current)
+    for vs in client.GetValueSetsByDomain(request):
+        for vv in vs.valuesets:
+            print(f'{vv.accession_id} - {vv.is_current}')
+
 
 # request2 = ValueSetRequest(value='select')
 # client.GetValueSetByValue(request2)
+
+if __name__ == "__main__":
+    client_app()
