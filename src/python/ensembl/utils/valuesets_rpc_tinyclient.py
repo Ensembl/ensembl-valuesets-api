@@ -53,21 +53,21 @@ def get_vs_by_accession(accession_id: str):
 def get_vs_by_value(value: str, is_current: bool = True):
     client = init_client()
     request = ValueSetRequest(value=value, is_current=is_current)
-    for vs in client.GetValueSetsByValue(request):
-        print(vs)
+    vsets = client.GetValueSetsByValue(request).valuesets
+    print(f'Returned {len(vsets)} ValueSets')
+    for vv in vsets:
+        print(f'{vv.accession_id} - {vv.is_current}')
 
 
 @client_app.command()
 def get_vs_by_domain(domain: str, is_current: bool = True):
     client = init_client()
     request = ValueSetRequest(accession_id=domain, is_current=is_current)
-    for vs in client.GetValueSetsByDomain(request):
-        for vv in vs.valuesets:
-            print(f'{vv.accession_id} - {vv.is_current}')
+    vsets = client.GetValueSetsByDomain(request).valuesets
+    print(f'Returned {len(vsets)} ValueSets')
+    for vv in vsets:
+        print(f'{vv.accession_id} - {vv.is_current}')
 
-
-# request2 = ValueSetRequest(value='select')
-# client.GetValueSetByValue(request2)
 
 if __name__ == "__main__":
     client_app()
