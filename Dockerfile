@@ -13,11 +13,12 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-FROM python:3.8-slim
-#FROM python:3.11-slim
+# FROM python:3.8-slim
+FROM python:3.11-slim
 
 ENV PYTHONUNBUFFERED 1
 ENV SERVER_PORT 50051
+ENV PYTHONPATH "/opt/ensembl-valuesets/src/python"
 
 WORKDIR /opt
 
