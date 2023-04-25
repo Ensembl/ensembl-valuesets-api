@@ -26,11 +26,11 @@
         "Topic :: Software Development :: Libraries :: Python Modules",
     ]
     dependencies = [
-        "grpcio >= 1.42.0",
-        "grpcio-tools >= 1.30",
-        "openpyxl >= 3.0",
-        "pandas >= 2.0.0",
-        "protobuf >= 3.20",
+        "grpcio >= 1.54.0",
+        "grpcio-tools >= 1.54.0",
+        "openpyxl >= 3.1.2",
+        "pandas >= 2.0.1",
+        "protobuf >= 4.22.3",
         "typer >= 0.7"
     ]
 

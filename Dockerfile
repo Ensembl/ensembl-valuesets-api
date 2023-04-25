@@ -17,11 +17,15 @@ FROM python:3.8-slim
 #FROM python:3.11-slim
 
 ENV PYTHONUNBUFFERED 1
+ENV SERVER_PORT 50051
 
 WORKDIR /opt
 
-COPY . /opt/
+COPY . /opt/ensembl-valuesets/
 
-RUN pip install --no-cache-dir ./ensembl-valuesets
+WORKDIR /opt/ensembl-valuesets
+
+RUN pip install --no-cache-dir .
 
 CMD ["python", "src/python/ensembl/valuesets/valuesets_rpc_server.py"]
+EXPOSE ${SERVER_PORT}
