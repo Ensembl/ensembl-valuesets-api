@@ -28,7 +28,7 @@ import logging
 
 import grpc
 from valuesets_pb2 import (
-        ValueSetResponse,
+        ValueSetList,
         ValueSetItem
 )
 from valuesets_pb2_grpc import(
@@ -51,7 +51,7 @@ class ValueSetGetterServicer(ValueSetServicer):
 
     def GetValueSetByAccessionId(
             self, request, context: grpc.ServicerContext
-        ) -> ValueSetResponse:
+        ) -> ValueSetList:
         """Retrieves a ValueSet by its accession ID."""
 
         _logger.info("Serving GetValueSetByAccessionId '%s'", str(request.accession_id).rstrip())
@@ -61,7 +61,7 @@ class ValueSetGetterServicer(ValueSetServicer):
         data = self._vs_data.get_vsdata_by_accession_id(request.accession_id)
         
         if not data:
-            return ValueSetResponse(valuesets=())
+            return ValueSetList(valuesets=())
         
         vset = ValueSetItem(accession_id=data.accession_id,
                                 label=data.label,
@@ -69,12 +69,12 @@ class ValueSetGetterServicer(ValueSetServicer):
                                 is_current=data.is_current,
                                 definition=data.definition,
                                 description=data.description)
-        return ValueSetResponse(valuesets=(vset,))
+        return ValueSetList(valuesets=(vset,))
 
 
     def GetValueSetsByValue(
             self, request, context: grpc.ServicerContext
-        ) -> Generator[ValueSetResponse, None, None]:
+        ) -> ValueSetList:
         """Retrieves a list of ValueSet by their Value."""
 
         _logger.info("Serving GetValueSetsByValue '%s'", str(request.value).rstrip())
@@ -84,7 +84,7 @@ class ValueSetGetterServicer(ValueSetServicer):
         data = self._vs_data.get_vsdata_by_value(value=request.value, is_current=request.is_current)
 
         if not data:
-            return ValueSetResponse(valuesets=())
+            return ValueSetList(valuesets=())
         
         vset = (ValueSetItem(accession_id=datum.accession_id,
                             label=datum.label,
@@ -92,12 +92,12 @@ class ValueSetGetterServicer(ValueSetServicer):
                             is_current=datum.is_current,
                             definition=datum.definition,
                             description=datum.description) for datum in data)
-        yield ValueSetResponse(valuesets=vset)
+        return ValueSetList(valuesets=vset)
 
 
     def GetValueSetsByDomain(
             self, request, context: grpc.ServicerContext
-        ) -> Generator[ValueSetResponse, None, None]:
+        ) -> ValueSetList:
         """Retrieves a list of ValueSet by their Domain."""
 
         _logger.info("Serving GetValueSetsByDomain '%s'", str(request.accession_id).rstrip())
@@ -107,7 +107,7 @@ class ValueSetGetterServicer(ValueSetServicer):
         data = self._vs_data.get_vsdata_by_domain(domain=request.accession_id, is_current=request.is_current)
 
         if not data:
-            return ValueSetResponse(valuesets=())
+            return ValueSetList(valuesets=())
         
         vset = (ValueSetItem(accession_id=datum.accession_id,
                             label=datum.label,
@@ -115,12 +115,12 @@ class ValueSetGetterServicer(ValueSetServicer):
                             is_current=datum.is_current,
                             definition=datum.definition,
                             description=datum.description) for datum in data)
-        yield ValueSetResponse(valuesets=vset)
+        return ValueSetList(valuesets=vset)
+        
 
-
-    def GetValueSetStream(
+    def GetAllValueSets(
             self, request, context: grpc.ServicerContext
-        ) -> Generator[ValueSetResponse, None, None]:
+        ) -> Generator[ValueSetItem, None, None]:
         """Retrieves the entire ValueSet list"""
 
         curr_s = 'current ' if request.is_current else ''
@@ -129,15 +129,16 @@ class ValueSetGetterServicer(ValueSetServicer):
         data = self._vs_data.get_all(request.is_current)
 
         if not data:
-            return ValueSetResponse(valuesets=())
+            return ValueSetItem()
         
-        vset = (ValueSetItem(accession_id=datum.accession_id,
-                            label=datum.label,
-                            value=datum.value,
-                            is_current=datum.is_current,
-                            definition=datum.definition,
-                            description=datum.description) for datum in data)
-        yield ValueSetResponse(valuesets=vset)
+        for datum in data:
+            vset = ValueSetItem(accession_id=datum.accession_id,
+                                label=datum.label,
+                                value=datum.value,
+                                is_current=datum.is_current,
+                                definition=datum.definition,
+                                description=datum.description)
+            yield vset
 
 
 class ValuesetsRPCServer():

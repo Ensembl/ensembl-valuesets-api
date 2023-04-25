@@ -42,7 +42,7 @@ message ValueSetItem {
 
 
 // List of ValueSet items to be returned as response to a RPC
-message ValueSetResponse {
+message ValueSetList {
     repeated ValueSetItem valuesets = 1;
 }
 
@@ -72,8 +72,8 @@ message ValueSetRequest {
 
 
 service ValueSet {
-    rpc GetValueSetByAccessionId (ValueSetRequest) returns (ValueSetResponse);
-    rpc GetValueSetsByValue (ValueSetRequest) returns (stream ValueSetResponse);
-    rpc GetValueSetsByDomain (ValueSetRequest) returns (stream ValueSetResponse);
-    rpc GetValueSetStream (ValueSetRequest) returns (stream ValueSetResponse);
+    rpc GetValueSetByAccessionId (ValueSetRequest) returns (ValueSetList);
+    rpc GetValueSetsByValue (ValueSetRequest) returns (ValueSetList);
+    rpc GetValueSetsByDomain (ValueSetRequest) returns (ValueSetList);
+    rpc GetAllValueSets (ValueSetRequest) returns (stream ValueSetItem);
 }
