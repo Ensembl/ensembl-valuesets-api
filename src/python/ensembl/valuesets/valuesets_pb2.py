@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x0fvaluesets.proto\"\xda\x01\n\x0cValueSetItem\x12\x14\n\x0c\x61\x63\x63\x65ssion_id\x18\x01 \x01(\t\x12\x12\n\x05label\x18\x02 \x01(\tH\x00\x88\x01\x01\x12\x12\n\x05value\x18\x03 \x01(\tH\x01\x88\x01\x01\x12\x17\n\nis_current\x18\x04 \x01(\x08H\x02\x88\x01\x01\x12\x17\n\ndefinition\x18\x05 \x01(\tH\x03\x88\x01\x01\x12\x18\n\x0b\x64\x65scription\x18\x06 \x01(\tH\x04\x88\x01\x01\x42\x08\n\x06_labelB\x08\n\x06_valueB\r\n\x0b_is_currentB\r\n\x0b_definitionB\x0e\n\x0c_description\"4\n\x10ValueSetResponse\x12 \n\tvaluesets\x18\x01 \x03(\x0b\x32\r.ValueSetItem\"\x90\x01\n\x16ValueSetRequestOptions\x12@\n\tread_mask\x18\x01 \x01(\x0b\x32(.ValueSetRequestOptions.ValueSetReadMaskH\x00\x88\x01\x01\x1a&\n\x10ValueSetReadMask\x12\x12\n\nfield_name\x18\x01 \x03(\tB\x0c\n\n_read_mask\"\xbc\x01\n\x0fValueSetRequest\x12\x19\n\x0c\x61\x63\x63\x65ssion_id\x18\x01 \x01(\tH\x00\x88\x01\x01\x12\x12\n\x05value\x18\x02 \x01(\tH\x01\x88\x01\x01\x12\x17\n\nis_current\x18\x03 \x01(\x08H\x02\x88\x01\x01\x12,\n\x06params\x18\x04 \x01(\x0b\x32\x17.ValueSetRequestOptionsH\x03\x88\x01\x01\x42\x0f\n\r_accession_idB\x08\n\x06_valueB\r\n\x0b_is_currentB\t\n\x07_params2\x8a\x02\n\x0eValueSetGetter\x12?\n\x18GetValueSetByAccessionId\x12\x10.ValueSetRequest\x1a\x11.ValueSetResponse\x12<\n\x13GetValueSetsByValue\x12\x10.ValueSetRequest\x1a\x11.ValueSetResponse0\x01\x12=\n\x14GetValueSetsByDomain\x12\x10.ValueSetRequest\x1a\x11.ValueSetResponse0\x01\x12:\n\x11GetValueSetStream\x12\x10.ValueSetRequest\x1a\x11.ValueSetResponse0\x01\x62\x06proto3'
+  serialized_pb=b'\n\x0fvaluesets.proto\"\xda\x01\n\x0cValueSetItem\x12\x14\n\x0c\x61\x63\x63\x65ssion_id\x18\x01 \x01(\t\x12\x12\n\x05label\x18\x02 \x01(\tH\x00\x88\x01\x01\x12\x12\n\x05value\x18\x03 \x01(\tH\x01\x88\x01\x01\x12\x17\n\nis_current\x18\x04 \x01(\x08H\x02\x88\x01\x01\x12\x17\n\ndefinition\x18\x05 \x01(\tH\x03\x88\x01\x01\x12\x18\n\x0b\x64\x65scription\x18\x06 \x01(\tH\x04\x88\x01\x01\x42\x08\n\x06_labelB\x08\n\x06_valueB\r\n\x0b_is_currentB\r\n\x0b_definitionB\x0e\n\x0c_description\"4\n\x10ValueSetResponse\x12 \n\tvaluesets\x18\x01 \x03(\x0b\x32\r.ValueSetItem\"\x90\x01\n\x16ValueSetRequestOptions\x12@\n\tread_mask\x18\x01 \x01(\x0b\x32(.ValueSetRequestOptions.ValueSetReadMaskH\x00\x88\x01\x01\x1a&\n\x10ValueSetReadMask\x12\x12\n\nfield_name\x18\x01 \x03(\tB\x0c\n\n_read_mask\"\xbc\x01\n\x0fValueSetRequest\x12\x19\n\x0c\x61\x63\x63\x65ssion_id\x18\x01 \x01(\tH\x00\x88\x01\x01\x12\x12\n\x05value\x18\x02 \x01(\tH\x01\x88\x01\x01\x12\x17\n\nis_current\x18\x03 \x01(\x08H\x02\x88\x01\x01\x12,\n\x06params\x18\x04 \x01(\x0b\x32\x17.ValueSetRequestOptionsH\x03\x88\x01\x01\x42\x0f\n\r_accession_idB\x08\n\x06_valueB\r\n\x0b_is_currentB\t\n\x07_params2\x84\x02\n\x08ValueSet\x12?\n\x18GetValueSetByAccessionId\x12\x10.ValueSetRequest\x1a\x11.ValueSetResponse\x12<\n\x13GetValueSetsByValue\x12\x10.ValueSetRequest\x1a\x11.ValueSetResponse0\x01\x12=\n\x14GetValueSetsByDomain\x12\x10.ValueSetRequest\x1a\x11.ValueSetResponse0\x01\x12:\n\x11GetValueSetStream\x12\x10.ValueSetRequest\x1a\x11.ValueSetResponse0\x01\x62\x06proto3'
 )
 
 
@@ -367,19 +367,19 @@ _sym_db.RegisterMessage(ValueSetRequest)
 
 
 
-_VALUESETGETTER = _descriptor.ServiceDescriptor(
-  name='ValueSetGetter',
-  full_name='ValueSetGetter',
+_VALUESET = _descriptor.ServiceDescriptor(
+  name='ValueSet',
+  full_name='ValueSet',
   file=DESCRIPTOR,
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
   serialized_start=633,
-  serialized_end=899,
+  serialized_end=893,
   methods=[
   _descriptor.MethodDescriptor(
     name='GetValueSetByAccessionId',
-    full_name='ValueSetGetter.GetValueSetByAccessionId',
+    full_name='ValueSet.GetValueSetByAccessionId',
     index=0,
     containing_service=None,
     input_type=_VALUESETREQUEST,
@@ -389,7 +389,7 @@ _VALUESETGETTER = _descriptor.ServiceDescriptor(
   ),
   _descriptor.MethodDescriptor(
     name='GetValueSetsByValue',
-    full_name='ValueSetGetter.GetValueSetsByValue',
+    full_name='ValueSet.GetValueSetsByValue',
     index=1,
     containing_service=None,
     input_type=_VALUESETREQUEST,
@@ -399,7 +399,7 @@ _VALUESETGETTER = _descriptor.ServiceDescriptor(
   ),
   _descriptor.MethodDescriptor(
     name='GetValueSetsByDomain',
-    full_name='ValueSetGetter.GetValueSetsByDomain',
+    full_name='ValueSet.GetValueSetsByDomain',
     index=2,
     containing_service=None,
     input_type=_VALUESETREQUEST,
@@ -409,7 +409,7 @@ _VALUESETGETTER = _descriptor.ServiceDescriptor(
   ),
   _descriptor.MethodDescriptor(
     name='GetValueSetStream',
-    full_name='ValueSetGetter.GetValueSetStream',
+    full_name='ValueSet.GetValueSetStream',
     index=3,
     containing_service=None,
     input_type=_VALUESETREQUEST,
@@ -418,8 +418,8 @@ _VALUESETGETTER = _descriptor.ServiceDescriptor(
     create_key=_descriptor._internal_create_key,
   ),
 ])
-_sym_db.RegisterServiceDescriptor(_VALUESETGETTER)
+_sym_db.RegisterServiceDescriptor(_VALUESET)
 
-DESCRIPTOR.services_by_name['ValueSetGetter'] = _VALUESETGETTER
+DESCRIPTOR.services_by_name['ValueSet'] = _VALUESET
 
 # @@protoc_insertion_point(module_scope)

@@ -16,7 +16,7 @@
 
 import grpc
 from ensembl.valuesets.valuesets_pb2 import ValueSetRequest
-from ensembl.valuesets.valuesets_pb2_grpc import ValueSetGetterStub
+from ensembl.valuesets.valuesets_pb2_grpc import ValueSetStub
 
 from typer import Typer
 
@@ -25,7 +25,7 @@ client_app = Typer()
 
 def init_client():
     channel = grpc.insecure_channel("localhost:50051")
-    return ValueSetGetterStub(channel)
+    return ValueSetStub(channel)
 
 
 @client_app.command()

@@ -31,8 +31,8 @@ from valuesets_pb2 import (
         ValueSetItem
 )
 from valuesets_pb2_grpc import(
-        ValueSetGetterServicer,
-        add_ValueSetGetterServicer_to_server
+        ValueSetServicer,
+        add_ValueSetServicer_to_server
 )
 from ensembl.valuesets.config import Config, default_conf
 from ensembl.valuesets.valuesets_data import *
@@ -41,7 +41,7 @@ _logger = None
 _config: Config = None
 _vs_data = None
 
-class ValueSetGetter(ValueSetGetterServicer):
+class ValueSetGetterServicer(ValueSetServicer):
     """Provides methods that implement functionality of ValueSets RPC server"""
 
     def GetValueSetByAccessionId(
@@ -156,7 +156,7 @@ def serve():
     signal(SIGINT, sigint_handler)
     signal(SIGTERM, sigterm_handler)
 
-    add_ValueSetGetterServicer_to_server(ValueSetGetter(), server)
+    add_ValueSetServicer_to_server(ValueSetGetterServicer(), server)
 
     listen_address = f'[::]:{_config.server_port}'
     server.add_insecure_port(listen_address)

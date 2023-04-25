@@ -5,7 +5,7 @@ import grpc
 import valuesets_pb2 as valuesets__pb2
 
 
-class ValueSetGetterStub(object):
+class ValueSetStub(object):
     """Missing associated documentation comment in .proto file."""
 
     def __init__(self, channel):
@@ -15,28 +15,28 @@ class ValueSetGetterStub(object):
             channel: A grpc.Channel.
         """
         self.GetValueSetByAccessionId = channel.unary_unary(
-                '/ValueSetGetter/GetValueSetByAccessionId',
+                '/ValueSet/GetValueSetByAccessionId',
                 request_serializer=valuesets__pb2.ValueSetRequest.SerializeToString,
                 response_deserializer=valuesets__pb2.ValueSetResponse.FromString,
                 )
         self.GetValueSetsByValue = channel.unary_stream(
-                '/ValueSetGetter/GetValueSetsByValue',
+                '/ValueSet/GetValueSetsByValue',
                 request_serializer=valuesets__pb2.ValueSetRequest.SerializeToString,
                 response_deserializer=valuesets__pb2.ValueSetResponse.FromString,
                 )
         self.GetValueSetsByDomain = channel.unary_stream(
-                '/ValueSetGetter/GetValueSetsByDomain',
+                '/ValueSet/GetValueSetsByDomain',
                 request_serializer=valuesets__pb2.ValueSetRequest.SerializeToString,
                 response_deserializer=valuesets__pb2.ValueSetResponse.FromString,
                 )
         self.GetValueSetStream = channel.unary_stream(
-                '/ValueSetGetter/GetValueSetStream',
+                '/ValueSet/GetValueSetStream',
                 request_serializer=valuesets__pb2.ValueSetRequest.SerializeToString,
                 response_deserializer=valuesets__pb2.ValueSetResponse.FromString,
                 )
 
 
-class ValueSetGetterServicer(object):
+class ValueSetServicer(object):
     """Missing associated documentation comment in .proto file."""
 
     def GetValueSetByAccessionId(self, request, context):
@@ -64,7 +64,7 @@ class ValueSetGetterServicer(object):
         raise NotImplementedError('Method not implemented!')
 
 
-def add_ValueSetGetterServicer_to_server(servicer, server):
+def add_ValueSetServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'GetValueSetByAccessionId': grpc.unary_unary_rpc_method_handler(
                     servicer.GetValueSetByAccessionId,
@@ -88,12 +88,12 @@ def add_ValueSetGetterServicer_to_server(servicer, server):
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'ValueSetGetter', rpc_method_handlers)
+            'ValueSet', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
 
 
  # This class is part of an EXPERIMENTAL API.
-class ValueSetGetter(object):
+class ValueSet(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
@@ -107,7 +107,7 @@ class ValueSetGetter(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/ValueSetGetter/GetValueSetByAccessionId',
+        return grpc.experimental.unary_unary(request, target, '/ValueSet/GetValueSetByAccessionId',
             valuesets__pb2.ValueSetRequest.SerializeToString,
             valuesets__pb2.ValueSetResponse.FromString,
             options, channel_credentials,
@@ -124,7 +124,7 @@ class ValueSetGetter(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_stream(request, target, '/ValueSetGetter/GetValueSetsByValue',
+        return grpc.experimental.unary_stream(request, target, '/ValueSet/GetValueSetsByValue',
             valuesets__pb2.ValueSetRequest.SerializeToString,
             valuesets__pb2.ValueSetResponse.FromString,
             options, channel_credentials,
@@ -141,7 +141,7 @@ class ValueSetGetter(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_stream(request, target, '/ValueSetGetter/GetValueSetsByDomain',
+        return grpc.experimental.unary_stream(request, target, '/ValueSet/GetValueSetsByDomain',
             valuesets__pb2.ValueSetRequest.SerializeToString,
             valuesets__pb2.ValueSetResponse.FromString,
             options, channel_credentials,
@@ -158,7 +158,7 @@ class ValueSetGetter(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_stream(request, target, '/ValueSetGetter/GetValueSetStream',
+        return grpc.experimental.unary_stream(request, target, '/ValueSet/GetValueSetStream',
             valuesets__pb2.ValueSetRequest.SerializeToString,
             valuesets__pb2.ValueSetResponse.FromString,
             options, channel_credentials,

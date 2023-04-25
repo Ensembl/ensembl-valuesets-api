@@ -20,7 +20,6 @@ into a memory structure for the gRPC server
 """
 
 import sys
-from typing import Generator
 from logging import Logger
 
 from pathlib import Path
@@ -98,8 +97,11 @@ class ValueSetData():
 
     def fetch_vs_data_from_json(self, url: ParseResult = None) -> dict[str,tuple[str]]:
         """Fetch ValueSets from external JSON file"""
+
         if not url:
             url = self._config.vset_source
+        if not isinstance(url, ParseResult):
+            raise ValueError(f"Invalid input argument: {type(url)}")
         if url.scheme not in ('file', 'http', 'https'):
             self._logger.error('Invalid scheme for valuesets URL; must be "file", "http", "https"')
             raise ValueError('Invalid scheme for valuesets URL; must be "file", "http", "https"')
@@ -123,13 +125,13 @@ class ValueSetData():
 
         return vs_data
     
+    
     def get_vsdata_by_accession_id(self, accession_id: str) -> namedtuple:
         accession_id.lower()
         self._logger.debug("Getting ValueSet data by accession %s", accession_id)
-        # row = self._data[self._data["accession_id"] == accession_id]
         vs = self._data.loc[self._data["accession_id"] == accession_id]
         res = tuple(vs.itertuples(name='ValueSet', index=False))
-        return res[0] if res else ()
+        return res[0] if res else tuple()
 
 
     def get_vsdata_by_value(self, value: str, is_current: bool = False) -> tuple[namedtuple]:
@@ -141,7 +143,7 @@ class ValueSetData():
         else:
             vs = self._data.loc[self._data["value"] == value]
         res = tuple(vs.itertuples(name='ValueSet', index=False))
-        return res if res else ()
+        return res if res else tuple()
 
 
     def get_vsdata_by_domain(self, domain: str, is_current: bool = False) -> tuple[namedtuple]:
@@ -156,7 +158,8 @@ class ValueSetData():
         else:
             vs = self._data.loc[self._data["accession_id"].str.contains(domain)]
         res = tuple(vs.itertuples(name='ValueSet', index=False))
-        return res if res else ()
+        return res if res else tuple()
+    
 
     def get_all(self, is_current: bool = False) -> tuple[namedtuple]:
         curr_s = 'current' if is_current else ''
@@ -166,22 +169,22 @@ class ValueSetData():
         else:
             vs = self._data
         res = tuple(vs.itertuples(name='ValueSet', index=False))
-        return res if res else ()
+        return res if res else tuple()
 
 
-# def main(logger = None, config: Config = default_conf):
-#     vs_data = ValueSetData(autoload=True)
-#     # data = vs_data.fetch_vs_data_from_json()
-#     # for k,v in data.items():
-#     #     print(f'{k}: {v}')
-#     # vset_d = vs_data.get_vsdata_by_accession_id('mane.select')
-#     vset_ds = vs_data.get_vsdata_by_value('select')
-#     # print(vset_d)
-#     # vset_ds = vs_data.get_vsdata_by_domain('mane')
-#     # vset_ds = vs_data.get_all()
-#     for item in vset_ds:
-#         print(item)
-
-
-# if __name__ == '__main__':
-#     main()
+if __name__ == '__main__':
+    from urllib.parse import urlparse
+    conf = Config(
+        debug=False,
+        server_port=50051,
+        vset_source=urlparse('file:./src/python/tests/data/valuesets.json'),
+        max_workers=10,
+        stop_timeout=30,
+        request_timeout=10
+    )
+    vd = ValueSetData(config=conf, autoload=True)
+    vs = vd.get_vsdata_by_domain(domain="mane", is_current=True)
+    vs_test = [ v.accession_id for v in vs if v.accession_id not in ('mane.select', 'mane.plus_clinical')]
+    # vs_test = ( v.accession_id for v in vs )
+    for i in vs_test:
+        print(i)
