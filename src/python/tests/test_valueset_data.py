@@ -86,7 +86,7 @@ def test_get_vsdata_by_domain_current_ok(valueset_data):
 def test_get_vsdata_by_domain_ok(valueset_data):
     vs = valueset_data.get_vsdata_by_domain(domain="mane")
     vs_test = [ v.accession_id for v in vs if v.accession_id in ('mane.select', 'mane.select2', 'mane.plus_clinical') and v.is_current ]
-    assert len(vs) == 3 and len(vs_test) == 2
+    assert len(vs) == 4 and len(vs_test) == 2
 
 def test_get_vsdata_by_domain_none(valueset_data):
     vs = valueset_data.get_vsdata_by_domain(domain="mone")
@@ -94,9 +94,9 @@ def test_get_vsdata_by_domain_none(valueset_data):
 
 def test_get_all_current(valueset_data):
     vs = valueset_data.get_all()
-    assert len(vs) == 30
+    assert len(vs) == 31
 
 def test_get_all(valueset_data):
     vs = valueset_data.get_all()
     vs_test = [ v.accession_id for v in vs if v.is_current ]
-    assert len(vs) == 30 and len(vs_test) == 29
+    assert len(vs) == 31 and len(vs_test) == 29

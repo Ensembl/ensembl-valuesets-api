@@ -20,6 +20,13 @@
         "Transcripts in the MANE Plus Clinical set are additional transcripts per locus necessary to support clinical variant reporting, for example transcripts containing known Pathogenic or Likely Pathogenic clinical variants not reportable using the MANE Select set. Note there may be additional clinically relevant transcripts in the wider RefSeq and Ensembl/GENCODE sets but not yet in MANE.",
         ""
     ],
+    "mane.plus_clinical2": [
+        "MANE Plus Clinical",
+        "plus_clinical",
+        0,
+        "Some outdated and msispelled dfefinition",
+        ""
+    ],
     "alphabet.dna": [
         "DNA alphabet",
         "dna_alphabet",
