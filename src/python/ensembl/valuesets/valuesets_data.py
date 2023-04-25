@@ -19,8 +19,7 @@ Convenient class to load ValueSet data from remote JSON file
 into a memory structure for the gRPC server
 """
 
-import sys
-from logging import Logger
+import logging
 
 from pathlib import Path
 from urllib.parse import ParseResult
@@ -35,12 +34,12 @@ from ensembl.valuesets.config import Config, default_conf
 
 __all__ = [ 'ValueSetData' ]
 
+_logger = logging.getLogger(__name__)
 
 class ValueSetData():
 
-    def __init__(self, config: Config = default_conf, logger: Logger = None, autoload: bool = False) -> None:
+    def __init__(self, config: Config = default_conf, autoload: bool = False) -> None:
         self._config = config
-        self._logger = self.init_logger(logger=logger)
         self._data = None
         if autoload:
             self.load_data()
@@ -48,19 +47,6 @@ class ValueSetData():
 
     def __repr__(self) -> str:
         return f"<{type(self).__name__}>"
-
-    
-    def init_logger(self, logger: Logger = None) -> Logger:
-        if logger is not None:
-            return logger
-        
-        import logging
-        logging.basicConfig(
-            stream=sys.stdout,
-            format="%(asctime)s %(levelname)-8s %(name)-15s: %(message)s",
-            level=logging.DEBUG if self._config.debug else logging.INFO,
-        )
-        return logging.getLogger('valuesets_data')
     
 
     def load_data(self) -> None:
@@ -71,9 +57,9 @@ class ValueSetData():
     def _load_data_into_cache(self, vs_data_raw: dict) -> None:
         """Loads data fetched from JSON into memory Pandas DataFrame"""
 
-        self._logger.info("Loading in-memory cache")
+        _logger.info("Loading in-memory cache")
         if not vs_data_raw:
-            self._logger.error('Something went wrong with loading the ValueSets')
+            _logger.error('Something went wrong with loading the ValueSets')
             raise Exception('Something went wrong with loading the ValueSets')
         
         def make_row(key: str, vals: tuple[str]) -> tuple[str]:
@@ -103,23 +89,23 @@ class ValueSetData():
         if not isinstance(url, ParseResult):
             raise ValueError(f"Invalid input argument: {type(url)}")
         if url.scheme not in ('file', 'http', 'https'):
-            self._logger.error('Invalid scheme for valuesets URL; must be "file", "http", "https"')
+            _logger.error('Invalid scheme for valuesets URL; must be "file", "http", "https"')
             raise ValueError('Invalid scheme for valuesets URL; must be "file", "http", "https"')
 
         vs_data = {}
         if url.scheme == 'file':
-            self._logger.info('Loading JSON from file URL: %s', url.geturl())
+            _logger.debug('Loading JSON from file URL: %s', url.geturl())
             filename = Path(url.netloc) / Path(url.path)
             if not filename.exists() or not filename.is_file():
-                self._logger.error('Provided input filename %s does not exists or is not a file', url)
+                _logger.error('Provided input filename %s does not exists or is not a file', url)
                 raise ValueError(f'Provided input filename {url} does not exists or is not a file')
             with open(filename, 'rt') as fh:
                 vs_data = json.load(fh)
         else:
-            self._logger.info('Loading JSON from http(s) URL: %s', url.geturl())
+            _logger.debug('Loading JSON from http(s) URL: %s', url.geturl())
             r = requests.get(url.geturl(), headers={ "Content-Type" : "application/json"}, timeout=self._config.request_timeout)
             if not r.ok:
-                self._logger.error('Request failed with code %s', r.status_code)
+                _logger.error('Request failed with code %s', r.status_code)
                 r.raise_for_status()
             vs_data = r.json()
 
@@ -128,7 +114,7 @@ class ValueSetData():
     
     def get_vsdata_by_accession_id(self, accession_id: str) -> namedtuple:
         accession_id.lower()
-        self._logger.debug("Getting ValueSet data by accession %s", accession_id)
+        _logger.debug("Getting ValueSet data by accession %s", accession_id)
         vs = self._data.loc[self._data["accession_id"] == accession_id]
         res = tuple(vs.itertuples(name='ValueSet', index=False))
         return res[0] if res else tuple()
@@ -137,7 +123,7 @@ class ValueSetData():
     def get_vsdata_by_value(self, value: str, is_current: bool = False) -> tuple[namedtuple]:
         value.lower()
         curr_s = 'current' if is_current else ''
-        self._logger.debug("Getting %s ValueSet data by value %s", curr_s, value)
+        _logger.debug("Getting %s ValueSet data by value %s", curr_s, value)
         if is_current:
             vs = self._data.loc[(self._data["value"] == value) & (self._data["is_current"] == is_current)]
         else:
@@ -149,7 +135,7 @@ class ValueSetData():
     def get_vsdata_by_domain(self, domain: str, is_current: bool = False) -> tuple[namedtuple]:
         domain.lower()
         curr_s = 'current' if is_current else ''
-        self._logger.debug("Getting %s ValueSet data by domain %s", curr_s, domain)
+        _logger.debug("Getting %s ValueSet data by domain %s", curr_s, domain)
         if is_current:
             vs = self._data.loc[
                 (self._data["accession_id"].str.startswith(domain)) 
@@ -163,7 +149,7 @@ class ValueSetData():
 
     def get_all(self, is_current: bool = False) -> tuple[namedtuple]:
         curr_s = 'current' if is_current else ''
-        self._logger.debug("Getting all %s ValueSet data", curr_s)
+        _logger.debug("Getting all %s ValueSet data", curr_s)
         if is_current:
             vs = self._data.loc[self._data["is_current"] == is_current]
         else:

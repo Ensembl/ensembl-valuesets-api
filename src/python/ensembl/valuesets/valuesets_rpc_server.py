@@ -24,6 +24,7 @@ from concurrent import futures
 from signal import signal, SIGINT, SIGTERM
 import sys
 from typing import Generator
+import logging
 
 import grpc
 from valuesets_pb2 import (
@@ -37,12 +38,16 @@ from valuesets_pb2_grpc import(
 from ensembl.valuesets.config import Config, default_conf
 from ensembl.valuesets.valuesets_data import *
 
-_logger = None
-_config: Config = None
-_vs_data = None
+__all__ = [ 'ValueSetGetterServicer', 'ValuesetsRPCServer' ]
+
+_logger = logging.getLogger(__name__)
 
 class ValueSetGetterServicer(ValueSetServicer):
     """Provides methods that implement functionality of ValueSets RPC server"""
+
+    def __init__(self, vs_data) -> None:
+        self._vs_data = vs_data
+        super().__init__()
 
     def GetValueSetByAccessionId(
             self, request, context: grpc.ServicerContext
@@ -53,7 +58,7 @@ class ValueSetGetterServicer(ValueSetServicer):
         if not request.accession_id:
             context.abort(grpc.StatusCode.INVALID_ARGUMENT, "accession_id invalid or None")
 
-        data = _vs_data.get_vsdata_by_accession_id(request.accession_id)
+        data = self._vs_data.get_vsdata_by_accession_id(request.accession_id)
         
         if not data:
             return ValueSetResponse(valuesets=())
@@ -76,7 +81,7 @@ class ValueSetGetterServicer(ValueSetServicer):
         if not request.value:
             context.abort(grpc.StatusCode.INVALID_ARGUMENT, "value invalid or None")
         
-        data = _vs_data.get_vsdata_by_value(value=request.value, is_current=request.is_current)
+        data = self._vs_data.get_vsdata_by_value(value=request.value, is_current=request.is_current)
 
         if not data:
             return ValueSetResponse(valuesets=())
@@ -99,7 +104,7 @@ class ValueSetGetterServicer(ValueSetServicer):
         if not request.accession_id:
             context.abort(grpc.StatusCode.INVALID_ARGUMENT, "value invalid or None")
         
-        data = _vs_data.get_vsdata_by_domain(domain=request.accession_id, is_current=request.is_current)
+        data = self._vs_data.get_vsdata_by_domain(domain=request.accession_id, is_current=request.is_current)
 
         if not data:
             return ValueSetResponse(valuesets=())
@@ -121,7 +126,7 @@ class ValueSetGetterServicer(ValueSetServicer):
         curr_s = 'current ' if request.is_current else ''
         _logger.info("Serving GetValueSetStream for %sValuesets", curr_s)
         
-        data = _vs_data.get_all(request.is_current)
+        data = self._vs_data.get_all(request.is_current)
 
         if not data:
             return ValueSetResponse(valuesets=())
@@ -135,71 +140,64 @@ class ValueSetGetterServicer(ValueSetServicer):
         yield ValueSetResponse(valuesets=vset)
 
 
-def exit_gracefully(server):
-    done = server.stop(_config.stop_timeout)
-    done.wait(_config.stop_timeout)
-
-
-def serve():
-    _logger.info(_config)
-
-    server = grpc.server(futures.ThreadPoolExecutor(max_workers=_config.max_workers))
+class ValuesetsRPCServer():
     
-    def sigint_handler(_signum, _frame):
-        _logger.info("Received SIGINT. Shutting down ...")
-        exit_gracefully(server)
+    def __init__(self, config: Config = default_conf, vs_data: ValueSetData = None) -> None:
+        if not isinstance(config, Config):
+            raise ValueError("Invalid argument 'config'")
+        if not isinstance(vs_data, ValueSetData) or not vs_data:
+            raise ValueError("Invalid argument 'vs_data'")
 
-    def sigterm_handler(_signum, _frame):
-        _logger.info("Received SIGTERM. Shutting down ...")
-        exit_gracefully(server)
+        self._config: Config = config
+        self._vs_data = vs_data
+        self._server = None
 
-    signal(SIGINT, sigint_handler)
-    signal(SIGTERM, sigterm_handler)
+        _logger.info(self._config)
+    
+    def __repr__(self) -> str:
+        return f'<{self.__class__.__name__}>({self._config})'
 
-    add_ValueSetServicer_to_server(ValueSetGetterServicer(), server)
+    def exit_gracefully(self):
+        done = self._server.stop(self._config.stop_timeout)
+        done.wait(self._config.stop_timeout)
 
-    listen_address = f'[::]:{_config.server_port}'
-    server.add_insecure_port(listen_address)
-    _logger.debug("Starting server on %s", listen_address)
-    server.start()
+    def serve(self):
+        self._server = grpc.server(futures.ThreadPoolExecutor(max_workers=self._config.max_workers))
+        
+        def sigint_handler(_signum, _frame):
+            _logger.info("Received SIGINT. Shutting down ...")
+            self.exit_gracefully()
 
-    server.wait_for_termination()
-    _logger.info('Stop complete.')
+        def sigterm_handler(_signum, _frame):
+            _logger.info("Received SIGTERM. Shutting down ...")
+            self.exit_gracefully()
+
+        signal(SIGINT, sigint_handler)
+        signal(SIGTERM, sigterm_handler)
+
+        add_ValueSetServicer_to_server(ValueSetGetterServicer(self._vs_data), self._server)
+
+        listen_address = f'[::]:{self._config.server_port}'
+        self._server.add_insecure_port(listen_address)
+        _logger.debug("Starting server on %s", listen_address)
+        self._server.start()
+
+        self._server.wait_for_termination()
+        _logger.info('Stop complete.')
 
 
-def init_logger(logger=None):
-    global _logger
-    if logger is not None:
-        _logger = logger
-    else:
-        import logging
-        logging.basicConfig(
+def main():
+    config=default_conf
+    logging.basicConfig(
             stream=sys.stdout,
             format="%(asctime)s %(levelname)-8s %(name)-15s: %(message)s",
-            level=logging.DEBUG if _config.debug else logging.INFO,
+            level=logging.DEBUG if config.debug else logging.INFO,
         )
-        _logger = logging.getLogger('valuesets_rpc')
-
-
-def init_config(config: Config):
-    if not config:
-        raise ValueError('Invalid argument "config"')
-    global _config
-    if _config and _config != config:
-        raise Exception('Found existing config in module'
-                        '"init_config" can be invoked only once.'
-              )
-    _config = config
-
-
-def main(logger = None, config: Config = default_conf):
-    init_config(config)
-    init_logger(logger)
-    global _vs_data
-    global _config
     global _logger
-    _vs_data = ValueSetData(_config, _logger, autoload=True)
-    serve()
+    _logger = logging.getLogger('valuesets_rpc')
+    vs_data = ValueSetData(config, autoload=True)
+    srv = ValuesetsRPCServer(config, vs_data)
+    srv.serve()
 
 
 if __name__ == '__main__':
