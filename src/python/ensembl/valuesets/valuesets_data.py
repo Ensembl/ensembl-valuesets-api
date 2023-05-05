@@ -37,6 +37,7 @@ __all__ = [ 'ValueSetData' ]
 _logger = logging.getLogger(__name__)
 
 class ValueSetData():
+    """Provides methods that implement functionality of ValueSetData"""
 
     def __init__(self, config: Config = default_conf, autoload: bool = False) -> None:
         self._config = config
@@ -82,7 +83,16 @@ class ValueSetData():
 
 
     def fetch_vs_data_from_json(self, url: ParseResult = None) -> dict[str,tuple[str]]:
-        """Fetch ValueSets from external JSON file"""
+        """
+        Fetches ValueSets from external JSON file.
+
+        :param url: ParseResult object representing the URL of the json file
+        :raise ValueError: if URL is not of type ParseResult
+        :raise ValueError: if URL scheme is invalid (must be 'file', 'http', or 'https')
+        :raise ValueError: if URL point to a file that does not exist
+        :raise ValueError: if HTTP(s) URL GET fails
+        :return: ValueSet data
+        """
 
         if not url:
             url = self._config.vset_source
@@ -113,6 +123,12 @@ class ValueSetData():
     
     
     def get_vsdata_by_accession_id(self, accession_id: str) -> namedtuple:
+        """
+        Retrieves ValueSet data from cache by accession.
+
+        :param accession_id: The accession of the data to retrieve
+        :return: ValueSet data
+        """
         accession_id.lower()
         _logger.debug("Getting ValueSet data by accession %s", accession_id)
         vs = self._data.loc[self._data["accession_id"] == accession_id]
@@ -121,6 +137,13 @@ class ValueSetData():
 
 
     def get_vsdata_by_value(self, value: str, is_current: bool = False) -> tuple[namedtuple]:
+        """
+        Retrieves ValueSet data from cache by value.
+
+        :param value: The value of the data to retrieve
+        :param is_current: The is_current flag of the data (default False)
+        :return: ValueSet data
+        """
         value.lower()
         curr_s = 'current' if is_current else ''
         _logger.debug("Getting %s ValueSet data by value %s", curr_s, value)
@@ -133,6 +156,13 @@ class ValueSetData():
 
 
     def get_vsdata_by_domain(self, domain: str, is_current: bool = False) -> tuple[namedtuple]:
+        """
+        Retrieves ValueSet data from cache by domain.
+
+        :param domain: The domain of the data to retrieve
+        :param is_current: The is_current flag of the data (default False)
+        :return: ValueSet data
+        """
         domain.lower()
         curr_s = 'current' if is_current else ''
         _logger.debug("Getting %s ValueSet data by domain %s", curr_s, domain)
@@ -148,6 +178,12 @@ class ValueSetData():
     
 
     def get_all(self, is_current: bool = False) -> tuple[namedtuple]:
+        """
+        Retrieves the whole ValueSet data from cache.
+
+        :param is_current: The is_current flag of the data (default False)
+        :return: ValueSet data
+        """
         curr_s = 'current' if is_current else ''
         _logger.debug("Getting all %s ValueSet data", curr_s)
         if is_current:

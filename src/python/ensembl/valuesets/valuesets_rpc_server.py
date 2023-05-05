@@ -52,7 +52,14 @@ class ValueSetGetterServicer(ValueSetServicer):
     def GetValueSetByAccessionId(
             self, request, context: grpc.ServicerContext
         ) -> ValueSetList:
-        """Retrieves a ValueSet by its accession ID."""
+        """
+        Retrieves a ValueSet by its accession ID.
+
+        :param request: ValueSetRequest object containing an 'accession_id' parameter
+        :param context: grpc.ServicerContext
+        :raise grpc.StatusCode.INVALID_ARGUMENT: if accession_id is invalid or not provided
+        :return: List of ValueSetItem objects
+        """
 
         _logger.info("Serving GetValueSetByAccessionId '%s'", str(request.accession_id).rstrip())
         if not request.accession_id:
@@ -75,7 +82,14 @@ class ValueSetGetterServicer(ValueSetServicer):
     def GetValueSetsByValue(
             self, request, context: grpc.ServicerContext
         ) -> ValueSetList:
-        """Retrieves a list of ValueSet by their Value."""
+        """
+        Retrieves a list of ValueSet by their Value.
+
+        :param request: ValueSetRequest object containing a 'value' parameter
+        :param context: grpc.ServicerContext
+        :raise grpc.StatusCode.INVALID_ARGUMENT: if value is invalid or not provided
+        :return: List of ValueSetItem objects
+        """
 
         _logger.info("Serving GetValueSetsByValue '%s'", str(request.value).rstrip())
         if not request.value:
@@ -98,11 +112,19 @@ class ValueSetGetterServicer(ValueSetServicer):
     def GetValueSetsByDomain(
             self, request, context: grpc.ServicerContext
         ) -> ValueSetList:
-        """Retrieves a list of ValueSet by their Domain."""
+        """
+        Retrieves a list of ValueSet by their Domain.
+        The domain value is extracted from the accession_id provided in the request.
+
+        :param request: ValueSetRequest object containing an 'accession_id' parameter
+        :param context: grpc.ServicerContext
+        :raise grpc.StatusCode.INVALID_ARGUMENT: if accession_id is invalid or not provided
+        :return: List of ValueSetItem objects
+        """
 
         _logger.info("Serving GetValueSetsByDomain '%s'", str(request.accession_id).rstrip())
         if not request.accession_id:
-            context.abort(grpc.StatusCode.INVALID_ARGUMENT, "value invalid or None")
+            context.abort(grpc.StatusCode.INVALID_ARGUMENT, "accession_id invalid or None")
         
         data = self._vs_data.get_vsdata_by_domain(domain=request.accession_id, is_current=request.is_current)
 
@@ -122,6 +144,13 @@ class ValueSetGetterServicer(ValueSetServicer):
             self, request, context: grpc.ServicerContext
         ) -> Generator[ValueSetItem, None, None]:
         """Retrieves the entire ValueSet list"""
+        """
+        Retrieves the entire ValueSet list.
+
+        :param request: ValueSetRequest object containing an 'accession_id' parameter
+        :param context: grpc.ServicerContext
+        :return: Generator of ValueSetItem objects
+        """
 
         curr_s = 'current ' if request.is_current else ''
         _logger.info("Serving GetValueSetStream for %sValuesets", curr_s)

@@ -1,39 +1,44 @@
-.. See the NOTICE file distributed with this work for additional information
-   regarding copyright ownership.
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
-
-.. Documentation master file, created by sphinx-quickstart on Thu Feb 23 13:50:00 2017.
+.. ValueSets API documentation master file, created by
+   sphinx-quickstart on Tue May  2 12:34:13 2023.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Documentation for Template
-==========================
+ValueSets API Documentation
+=========================================
+
+An Ensembl **ValueSet** is a collection of key/value pairs that are related to a given topic. In the context of Ensembl data, these represent definitions of certain terms that may be used in several different places. The **ValueSets API** allows to query the source of these terms in order to get their definitons.
+
+A **ValueSet** item should have the following fields:
+
+- *accession_id* (str): value set unique identifier - e.g. "mane.select"
+
+- *label* (str): short human-friendly name - e.g. "MANE Select"
+
+- *value* (str): short machine-friendly name - e.g. "select"
+
+- *definition* (str): short description - e.g. "A Transcript which is matched between Ensembl/GENCODE and RefSeq as part of the MANE project"
+
+- *description* (str): long verbose definition - e.g. "A Matched Annotation from NCBI and EMBL-EBI is a collaboration between Ensembl/GENCODE and RefSeq. The MANE Select is a default transcript per human gene that is representative of biology, well-supported, expressed and highly-conserved. This transcript set matches GRCh38 and is 100% identical between RefSeq and Ensembl/GENCODE for 5' UTR, CDS, splicing and 3'UTR."
 
 .. toctree::
-   :caption: Table of Contents
-   :name: mastertoc
    :maxdepth: 2
+   :caption: Contents:
 
-   install
+
+
+.. Indices and tables
+.. ==================
+
+.. * :ref:`genindex`
+.. * :ref:`modindex`
+.. * :ref:`search`
+
+
+Contents
+--------
+
+.. toctree::
+
+   usage
+   api
    license
-   modules
-
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
