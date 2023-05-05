@@ -64,8 +64,8 @@ def test_fetch_data_from_json_url_https_ko(valueset_data):
 
 def test_get_vsdata_by_accession_id_ok(valueset_data):
     vs = valueset_data.get_vsdata_by_accession_id("mane.select")
-    assert vs.accession_id == "mane.select", "Response accession_id: {vs.accession_id} not the expected one: mane.select"
-    assert vs.label == "MANE Select", "Response label: {vs.label} not the expected one: MANE.Select"
+    assert vs.accession_id == "mane.select", f'Response accession_id: {vs.accession_id} not the expected one: mane.select'
+    assert vs.label == "MANE Select", f'Response label: {vs.label} not the expected one: MANE.Select'
     assert vs.is_current == True, "Valueset returned is not current"
 
 def test_get_vsdata_by_accession_id_none(valueset_data):
@@ -80,11 +80,11 @@ def test_get_vsdata_by_accession_id_empty(valueset_data):
 def test_get_vsdata_by_value_current_ok(valueset_data):
     vs = valueset_data.get_vsdata_by_value(value="plus_clinical", is_current=True)
     assert len(vs) > 0, "Got 0 valuesets"
-    assert vs[0].accession_id == "mane.plus_clinical" and vs[0].value == "plus_clinical", "Response accession_id: {vs[0].accession_id} not the expected one: mane.plus_clinical or response value: {vs[0].value} not the expected one: plus_clinical"
+    assert vs[0].accession_id == "mane.plus_clinical" and vs[0].value == "plus_clinical", f'Response accession_id: {vs[0].accession_id} not the expected one: mane.plus_clinical or response value: {vs[0].value} not the expected one: plus_clinical'
 
 def test_get_vsdata_by_value_ok(valueset_data):
     vs = valueset_data.get_vsdata_by_value(value="select")
-    assert len(vs) == 2, "Got " + str(len(vs)) + " valusets while expecting 2"
+    assert len(vs) == 2, f'Got {len(vs)} valusets while expecting 2'
     assert len([ v.accession_id for v in vs if "select" in v ]) == 2, "Expecting 2 valusets with the value: select"
     assert not (vs[0].is_current and vs[1].is_current), "Expecting only current valuesets"
 
@@ -99,12 +99,12 @@ def test_get_vsdata_by_value_empty(valueset_data):
 def test_get_vsdata_by_domain_current_ok(valueset_data):
     vs = valueset_data.get_vsdata_by_domain(domain="mane", is_current=True)
     vs_test = [ v.accession_id for v in vs if v.accession_id in ('mane.select', 'mane.plus_clinical')]
-    assert len(vs) == 2 and len(vs_test) == 2, "Got " + str(len(vs)) + " valusets while expecting 2"
+    assert len(vs) == 2 and len(vs_test) == 2, f'Got {len(vs)} valusets while expecting 2'
 
 def test_get_vsdata_by_domain_ok(valueset_data):
     vs = valueset_data.get_vsdata_by_domain(domain="mane")
     vs_test = [ v.accession_id for v in vs if v.accession_id in ('mane.select', 'mane.select2', 'mane.plus_clinical') and v.is_current ]
-    assert len(vs) == 4 and len(vs_test) == 2, "Got " + str(len(vs)) + " valusets while expecting 4"
+    assert len(vs) == 4 and len(vs_test) == 2, f'Got {len(vs)} valusets while expecting 4'
 
 def test_get_vsdata_by_domain_none(valueset_data):
     vs = valueset_data.get_vsdata_by_domain(domain="mone")
@@ -116,9 +116,9 @@ def test_get_vsdata_by_domain_empty(valueset_data):
 
 def test_get_all_current(valueset_data):
     vs = valueset_data.get_all(1)
-    assert len(vs) == 29, "Got " + str(len(vs)) + " current valusets while expecting 29"
+    assert len(vs) == 29, f'Got {len(vs)} current valusets while expecting 29'
 
 def test_get_all(valueset_data):
     vs = valueset_data.get_all()
     vs_test = [ v.accession_id for v in vs if v.is_current ]
-    assert len(vs) == 31 and len(vs_test) == 29, "Got " + str(len(vs)) + " current valusets while expecting 31"
+    assert len(vs) == 31 and len(vs_test) == 29, f'Got {len(vs)} current valusets while expecting 31'
