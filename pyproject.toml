@@ -55,7 +55,7 @@
 
 [project.urls]
     homepage = "https://www.ensembl.org"
-    repository = "https://github.com/Ensembl/ensembl-valuesets"
+    repository = "https://github.com/Ensembl/ensembl-valuesets-api"
 
 [project.scripts]
     ens_vset_run = "ensembl.valuesets.valuesets_rpc_server:main"

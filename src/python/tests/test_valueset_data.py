@@ -33,7 +33,7 @@ def valueset_data():
 
 
 def test_fetch_data_from_json_url_https_ok(valueset_data):
-    url = "https://raw.githubusercontent.com/sgiorgetti/test-valuesets/main/valuesets.json"
+    url = "https://raw.githubusercontent.com/Ensembl/ensembl-valuesets/main/valuesets.json"
     vs_data = valueset_data.fetch_vs_data_from_json(urlparse(url))
     assert len(vs_data) > 0, "Got 0 valuesets"
 
@@ -43,12 +43,12 @@ def test_fetch_data_from_json_url_file_ok(valueset_data):
     assert len(vs_data) > 0, "Got 0 valuesets"
 
 def test_fetch_data_from_json_url_ko_str(valueset_data):
-    url = "https://raw.githubusercontent.com/sgiorgetti/test-valuesets/main/valuesets.json"
+    url = "https://raw.githubusercontent.com/Ensembl/ensembl-valuesets/main/valuesets.json"
     with pytest.raises(ValueError) as e_info:
         _ = valueset_data.fetch_vs_data_from_json(url)
 
 def test_fetch_data_from_json_url_ko_scheme(valueset_data):
-    url = "ftp://raw.githubusercontent.com/sgiorgetti/test-valuesets/main/valuesets.json"
+    url = "ftp://raw.githubusercontent.com/Ensembl/ensembl-valuesets/main/valuesets.json"
     with pytest.raises(ValueError) as e_info:
         _ = valueset_data.fetch_vs_data_from_json(url)
 
@@ -58,7 +58,7 @@ def test_fetch_data_from_json_url_file_ko(valueset_data):
         _ = valueset_data.fetch_vs_data_from_json(urlparse(url))
 
 def test_fetch_data_from_json_url_https_ko(valueset_data):
-    url = "https://raw.githubusercontent.com/sgiorgetti/test-valuesets/main/valuesets_test.json"
+    url = "https://raw.githubusercontent.com/Ensembl/ensembl-valuesets/main/notsuchafile.json"
     with pytest.raises(Exception) as e_info:
         _ = valueset_data.fetch_vs_data_from_json(urlparse(url))
 

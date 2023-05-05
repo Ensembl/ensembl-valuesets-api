@@ -36,25 +36,25 @@ Clone this repo:
 
 .. code-block:: console
 
-   git clone --depth 1 -b main https://github.com/Ensembl/ensembl-valuesets.git
+   git clone --depth 1 -b main https://github.com/Ensembl/ensembl-valuesets-api.git
 
 Install the python requirements:
 
 .. code-block:: console
 
-   pip install ./ensembl-valuesets
+   pip install ./ensembl-valuesets-api
 
 Run the server, listening on default port 50051:
 
 .. code-block:: console
 
-   python ensembl-valuesets/src/python/ensembl/valuesets/valuesets_rpc_server.py
+   python ensembl-valuesets-api/src/python/ensembl/valuesets/valuesets_rpc_server.py
 
 Test the server with the provided basic client:
 
 .. code-block:: console
 
-   python ensembl-valuesets/src/python/ensembl/utils/valuesets_rpc_tinyclient.py
+   python ensembl-valuesets-api/src/python/ensembl/utils/valuesets_rpc_tinyclient.py
 
 Testing
 -------
@@ -63,5 +63,5 @@ Run test suite:
 
 .. code-block:: console
 
-   cd ensembl-valuesets
+   cd ensembl-valuesets-api
    pytest

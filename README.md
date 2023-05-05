@@ -44,11 +44,11 @@ A ValueSet item should have the following fields:
 
 Clone this repo:
 ```
-git clone --depth 1 -b main https://github.com/Ensembl/ensembl-valuesets.git
+git clone --depth 1 -b main https://github.com/Ensembl/ensembl-valuesets-api.git
 ```
 Install the python part (of the pipelines) and test it:
 ```
-pip install ./ensembl-valuesets
+pip install ./ensembl-valuesets-api
 
 # test
 # do something!
@@ -66,7 +66,7 @@ python scripts/client.py
 ### Optional installation
 If you need to install "editable" python package use '-e' option
 ```
-pip install -e ./ensembl-valuesets
+pip install -e ./ensembl-valuesets-api
 ```
 
 

@@ -18,13 +18,13 @@ FROM python:3.11-slim
 
 ENV PYTHONUNBUFFERED 1
 ENV SERVER_PORT 50051
-ENV PYTHONPATH "/opt/ensembl-valuesets/src/python"
+ENV PYTHONPATH "/opt/ensembl-valuesets-api/src/python"
 
 WORKDIR /opt
 
-COPY . /opt/ensembl-valuesets/
+COPY . /opt/ensembl-valuesets-api/
 
-WORKDIR /opt/ensembl-valuesets
+WORKDIR /opt/ensembl-valuesets-api
 
 RUN pip install --no-cache-dir .
 
