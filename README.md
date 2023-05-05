@@ -21,7 +21,7 @@ A ValueSet item should have the following fields:
 ## Requirements
 
 - pyenv (with pyenv-virtualenv plugin)
-- Python 3.8+
+- Python 3.10+
 - grpcio 
 - grpcio-tools 1.30+
 - openpyxl 3.\*+ (optional)
