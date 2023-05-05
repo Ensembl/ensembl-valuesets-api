@@ -38,7 +38,7 @@ class Config():
 default_conf = Config(
     debug=parse_debug_var(os.getenv("DEBUG", "false")),
     server_port=int(os.getenv("SERVER_PORT", "50051")),
-    vset_source=urlparse(os.getenv("VSET_JSON_URL", "https://raw.githubusercontent.com/sgiorgetti/test-valuesets/main/valuesets.json")),
+    vset_source=urlparse(os.getenv("VSET_JSON_URL", "https://raw.githubusercontent.com/Ensembl/ensembl-valuesets/main/valuesets.json")),
     max_workers=int(os.getenv("MAX_WORKERS", "10")),
     stop_timeout=int(os.getenv("STOP_TIMEOUT", "30")),
     request_timeout=int(os.getenv("REQUEST_TIMEOUT", "10")),
