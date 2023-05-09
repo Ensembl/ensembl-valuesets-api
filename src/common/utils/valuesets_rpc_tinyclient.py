@@ -15,8 +15,8 @@
 """Ensembl ValueSets client example."""
 
 import grpc
-from ensembl.valuesets.valuesets_pb2 import ValueSetRequest
-from ensembl.valuesets.valuesets_pb2_grpc import ValueSetStub
+from src.grpc.ensembl.valuesets.valuesets_pb2 import ValueSetRequest
+from src.grpc.ensembl.valuesets.valuesets_pb2_grpc import ValueSetStub
 
 from typer import Typer
 

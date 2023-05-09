@@ -27,20 +27,23 @@ from typing import Generator
 import logging
 
 import grpc
-from valuesets_pb2 import (
-        ValueSetList,
-        ValueSetItem
-)
-from valuesets_pb2_grpc import(
-        ValueSetServicer,
-        add_ValueSetServicer_to_server
-)
-from ensembl.valuesets.config import Config, default_conf
-from ensembl.valuesets.valuesets_data import *
 
-__all__ = [ 'ValueSetGetterServicer', 'ValuesetsRPCServer' ]
+from src.common.valuesets_data import ValueSetData
+
+from src.grpc.ensembl.valuesets.valuesets_pb2 import (
+    ValueSetList,
+    ValueSetItem
+)
+from src.grpc.ensembl.valuesets.valuesets_pb2_grpc import (
+    ValueSetServicer,
+    add_ValueSetServicer_to_server
+)
+from src.common.config import Config, default_conf
+
+__all__ = ['ValueSetGetterServicer', 'ValuesetsRPCServer']
 
 _logger = logging.getLogger(__name__)
+
 
 class ValueSetGetterServicer(ValueSetServicer):
     """Provides methods that implement functionality of ValueSets RPC server"""
@@ -51,7 +54,7 @@ class ValueSetGetterServicer(ValueSetServicer):
 
     def GetValueSetByAccessionId(
             self, request, context: grpc.ServicerContext
-        ) -> ValueSetList:
+    ) -> ValueSetList:
         """
         Retrieves a ValueSet by its accession ID.
 
@@ -66,22 +69,21 @@ class ValueSetGetterServicer(ValueSetServicer):
             context.abort(grpc.StatusCode.INVALID_ARGUMENT, "accession_id invalid or None")
 
         data = self._vs_data.get_vsdata_by_accession_id(request.accession_id)
-        
+
         if not data:
             return ValueSetList(valuesets=())
-        
-        vset = ValueSetItem(accession_id=data.accession_id,
-                                label=data.label,
-                                value=data.value,
-                                is_current=data.is_current,
-                                definition=data.definition,
-                                description=data.description)
-        return ValueSetList(valuesets=(vset,))
 
+        vset = ValueSetItem(accession_id=data.accession_id,
+                            label=data.label,
+                            value=data.value,
+                            is_current=data.is_current,
+                            definition=data.definition,
+                            description=data.description)
+        return ValueSetList(valuesets=(vset,))
 
     def GetValueSetsByValue(
             self, request, context: grpc.ServicerContext
-        ) -> ValueSetList:
+    ) -> ValueSetList:
         """
         Retrieves a list of ValueSet by their Value.
 
@@ -94,24 +96,23 @@ class ValueSetGetterServicer(ValueSetServicer):
         _logger.info("Serving GetValueSetsByValue '%s'", str(request.value).rstrip())
         if not request.value:
             context.abort(grpc.StatusCode.INVALID_ARGUMENT, "value invalid or None")
-        
+
         data = self._vs_data.get_vsdata_by_value(value=request.value, is_current=request.is_current)
 
         if not data:
             return ValueSetList(valuesets=())
-        
-        vset = (ValueSetItem(accession_id=datum.accession_id,
-                            label=datum.label,
-                            value=datum.value,
-                            is_current=datum.is_current,
-                            definition=datum.definition,
-                            description=datum.description) for datum in data)
-        return ValueSetList(valuesets=vset)
 
+        vset = (ValueSetItem(accession_id=datum.accession_id,
+                             label=datum.label,
+                             value=datum.value,
+                             is_current=datum.is_current,
+                             definition=datum.definition,
+                             description=datum.description) for datum in data)
+        return ValueSetList(valuesets=vset)
 
     def GetValueSetsByDomain(
             self, request, context: grpc.ServicerContext
-        ) -> ValueSetList:
+    ) -> ValueSetList:
         """
         Retrieves a list of ValueSet by their Domain.
         The domain value is extracted from the accession_id provided in the request.
@@ -125,24 +126,23 @@ class ValueSetGetterServicer(ValueSetServicer):
         _logger.info("Serving GetValueSetsByDomain '%s'", str(request.accession_id).rstrip())
         if not request.accession_id:
             context.abort(grpc.StatusCode.INVALID_ARGUMENT, "accession_id invalid or None")
-        
+
         data = self._vs_data.get_vsdata_by_domain(domain=request.accession_id, is_current=request.is_current)
 
         if not data:
             return ValueSetList(valuesets=())
-        
+
         vset = (ValueSetItem(accession_id=datum.accession_id,
-                            label=datum.label,
-                            value=datum.value,
-                            is_current=datum.is_current,
-                            definition=datum.definition,
-                            description=datum.description) for datum in data)
+                             label=datum.label,
+                             value=datum.value,
+                             is_current=datum.is_current,
+                             definition=datum.definition,
+                             description=datum.description) for datum in data)
         return ValueSetList(valuesets=vset)
-        
 
     def GetAllValueSets(
             self, request, context: grpc.ServicerContext
-        ) -> Generator[ValueSetItem, None, None]:
+    ) -> Generator[ValueSetItem, None, None]:
         """Retrieves the entire ValueSet list"""
         """
         Retrieves the entire ValueSet list.
@@ -154,12 +154,12 @@ class ValueSetGetterServicer(ValueSetServicer):
 
         curr_s = 'current ' if request.is_current else ''
         _logger.info("Serving GetValueSetStream for %sValuesets", curr_s)
-        
+
         data = self._vs_data.get_all(request.is_current)
 
         if not data:
             return ValueSetItem()
-        
+
         for datum in data:
             vset = ValueSetItem(accession_id=datum.accession_id,
                                 label=datum.label,
@@ -170,8 +170,8 @@ class ValueSetGetterServicer(ValueSetServicer):
             yield vset
 
 
-class ValuesetsRPCServer():
-    
+class ValuesetsRPCServer:
+
     def __init__(self, config: Config = default_conf, vs_data: ValueSetData = None) -> None:
         if not isinstance(config, Config):
             raise ValueError("Invalid argument 'config'")
@@ -183,7 +183,7 @@ class ValuesetsRPCServer():
         self._server = None
 
         _logger.info(self._config)
-    
+
     def __repr__(self) -> str:
         return f'<{self.__class__.__name__}>({self._config})'
 
@@ -193,7 +193,7 @@ class ValuesetsRPCServer():
 
     def serve(self):
         self._server = grpc.server(futures.ThreadPoolExecutor(max_workers=self._config.max_workers))
-        
+
         def sigint_handler(_signum, _frame):
             _logger.info("Received SIGINT. Shutting down ...")
             self.exit_gracefully()
@@ -217,12 +217,12 @@ class ValuesetsRPCServer():
 
 
 def main():
-    config=default_conf
+    config = default_conf
     logging.basicConfig(
-            stream=sys.stdout,
-            format="%(asctime)s %(levelname)-8s %(name)-15s: %(message)s",
-            level=logging.DEBUG if config.debug else logging.INFO,
-        )
+        stream=sys.stdout,
+        format="%(asctime)s %(levelname)-8s %(name)-15s: %(message)s",
+        level=logging.DEBUG if config.debug else logging.INFO,
+    )
     global _logger
     _logger = logging.getLogger('valuesets_rpc')
     vs_data = ValueSetData(config, autoload=True)

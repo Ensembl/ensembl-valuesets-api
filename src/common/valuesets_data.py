@@ -29,14 +29,14 @@ import requests
 import pandas as pd
 from collections import namedtuple
 
-from ensembl.valuesets.config import Config, default_conf
+from src.common.config import Config, default_conf
 
-
-__all__ = [ 'ValueSetData' ]
+__all__ = ['ValueSetData']
 
 _logger = logging.getLogger(__name__)
 
-class ValueSetData():
+
+class ValueSetData:
     """Provides methods that implement functionality of ValueSetData"""
 
     def __init__(self, config: Config = default_conf, autoload: bool = False) -> None:
@@ -45,15 +45,12 @@ class ValueSetData():
         if autoload:
             self.load_data()
 
-
     def __repr__(self) -> str:
         return f"<{type(self).__name__}>"
-    
 
     def load_data(self) -> None:
         data = self.fetch_vs_data_from_json(self._config.vset_source)
         self._load_data_into_cache(data)
-
 
     def _load_data_into_cache(self, vs_data_raw: dict) -> None:
         """Loads data fetched from JSON into memory Pandas DataFrame"""
@@ -62,13 +59,13 @@ class ValueSetData():
         if not vs_data_raw:
             _logger.error('Something went wrong with loading the ValueSets')
             raise Exception('Something went wrong with loading the ValueSets')
-        
+
         def make_row(key: str, vals: tuple[str]) -> tuple[str]:
-            rr = [key,]
+            rr = [key, ]
             rr.extend(vals)
             return tuple(rr)
-        
-        values = [ make_row(k,v) for k,v in vs_data_raw.items() ]
+
+        values = [make_row(k, v) for k, v in vs_data_raw.items()]
 
         col_names = [
             'accession_id',
@@ -78,11 +75,10 @@ class ValueSetData():
             'definition',
             'description'
         ]
-        self._data = pd.DataFrame(values,index=vs_data_raw.keys(), columns=col_names)
-        self._data['is_current'] = self._data['is_current'].replace([0,1],[False, True])
+        self._data = pd.DataFrame(values, index=vs_data_raw.keys(), columns=col_names)
+        self._data['is_current'] = self._data['is_current'].replace([0, 1], [False, True])
 
-
-    def fetch_vs_data_from_json(self, url: ParseResult = None) -> dict[str,tuple[str]]:
+    def fetch_vs_data_from_json(self, url: ParseResult = None) -> dict[str, tuple[str]]:
         """
         Fetches ValueSets from external JSON file.
 
@@ -113,15 +109,16 @@ class ValueSetData():
                 vs_data = json.load(fh)
         else:
             _logger.debug('Loading JSON from http(s) URL: %s', url.geturl())
-            r = requests.get(url.geturl(), headers={ "Content-Type" : "application/json"}, timeout=self._config.request_timeout)
+            r = requests.get(url.geturl(), headers={"Content-Type": "application/json"},
+                             timeout=self._config.request_timeout)
             if not r.ok:
                 _logger.error('Request failed with code %s', r.status_code)
                 r.raise_for_status()
+            print(r.content)
             vs_data = r.json()
 
         return vs_data
-    
-    
+
     def get_vsdata_by_accession_id(self, accession_id: str) -> namedtuple:
         """
         Retrieves ValueSet data from cache by accession.
@@ -134,7 +131,6 @@ class ValueSetData():
         vs = self._data.loc[self._data["accession_id"] == accession_id]
         res = tuple(vs.itertuples(name='ValueSet', index=False))
         return res[0] if res else tuple()
-
 
     def get_vsdata_by_value(self, value: str, is_current: bool = False) -> tuple[namedtuple]:
         """
@@ -154,7 +150,6 @@ class ValueSetData():
         res = tuple(vs.itertuples(name='ValueSet', index=False))
         return res if res else tuple()
 
-
     def get_vsdata_by_domain(self, domain: str, is_current: bool = False) -> tuple[namedtuple]:
         """
         Retrieves ValueSet data from cache by domain.
@@ -168,14 +163,13 @@ class ValueSetData():
         _logger.debug("Getting %s ValueSet data by domain %s", curr_s, domain)
         if is_current:
             vs = self._data.loc[
-                (self._data["accession_id"].str.startswith(domain)) 
+                (self._data["accession_id"].str.startswith(domain))
                 & (self._data["is_current"] == is_current)
-            ]
+                ]
         else:
             vs = self._data.loc[self._data["accession_id"].str.contains(domain)]
         res = tuple(vs.itertuples(name='ValueSet', index=False))
         return res if res else tuple()
-    
 
     def get_all(self, is_current: bool = False) -> tuple[namedtuple]:
         """
@@ -196,6 +190,7 @@ class ValueSetData():
 
 if __name__ == '__main__':
     from urllib.parse import urlparse
+
     conf = Config(
         debug=False,
         server_port=50051,
@@ -206,7 +201,7 @@ if __name__ == '__main__':
     )
     vd = ValueSetData(config=conf, autoload=True)
     vs = vd.get_vsdata_by_domain(domain="mane", is_current=True)
-    vs_test = [ v.accession_id for v in vs if v.accession_id not in ('mane.select', 'mane.plus_clinical')]
+    vs_test = [v.accession_id for v in vs if v.accession_id not in ('mane.select', 'mane.plus_clinical')]
     # vs_test = ( v.accession_id for v in vs )
     for i in vs_test:
         print(i)

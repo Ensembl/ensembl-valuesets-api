@@ -17,14 +17,15 @@ ValuSets ValueSetsGetter tests
 """
 
 import pytest
-import grpc
+from src import grpc
 
-from ensembl.valuesets.valuesets_data import ValueSetData
-from ensembl.valuesets.config import Config
-from ensembl.valuesets.valuesets_rpc_server import ValueSetGetterServicer
-from ensembl.valuesets.valuesets_pb2 import ValueSetRequest
+from src.common.valuesets_data import ValueSetData
+from src.common.config import Config
+from src.grpc.ensembl.valuesets_rpc_server import ValueSetGetterServicer
+from src.grpc.ensembl.valuesets.valuesets_pb2 import ValueSetRequest
 
 from urllib.parse import urlparse
+
 
 @pytest.fixture(scope='module')
 def valueset_data():
@@ -38,6 +39,7 @@ def valueset_data():
     )
     return ValueSetData(autoload=True, config=conf)
 
+
 class MockContext:
     def abort(self, status, msg):
         error = grpc.RpcError()
@@ -45,9 +47,11 @@ class MockContext:
         error.details = lambda: msg
         raise error
 
+
 @pytest.fixture
 def context():
     return MockContext()
+
 
 @pytest.fixture
 def vs_servicer(valueset_data):
@@ -57,37 +61,42 @@ def vs_servicer(valueset_data):
 @pytest.fixture
 def vs_request_current_ok():
     return ValueSetRequest(
-                accession_id = 'mane.plus_clinical',
-                value = 'plus_clinical',
-                is_current = True
+        accession_id='mane.plus_clinical',
+        value='plus_clinical',
+        is_current=True
     )
+
 
 @pytest.fixture
 def vs_request_domain_current_ok():
     return ValueSetRequest(
-                accession_id = 'mane',
-                is_current = True,
+        accession_id='mane',
+        is_current=True,
     )
+
 
 @pytest.fixture
 def vs_request_noncurr_ok():
     return ValueSetRequest(
-                accession_id = 'mane.plus_clinical2',
-                value = 'plus_clinical'
+        accession_id='mane.plus_clinical2',
+        value='plus_clinical'
     )
+
 
 @pytest.fixture
 def vs_request_domain_noncurr_ok():
     return ValueSetRequest(
-                accession_id = 'mane',
+        accession_id='mane',
     )
+
 
 @pytest.fixture
 def vs_request_missing():
     return ValueSetRequest(
-                accession_id = 'mane.minus_clinical',
-                value = 'minus_clinical'
+        accession_id='mane.minus_clinical',
+        value='minus_clinical'
     )
+
 
 @pytest.fixture
 def vs_request_empty():
@@ -102,15 +111,18 @@ def test_get_vs_by_accession_success(vs_servicer, vs_request_current_ok, context
     assert vset.value == vs_request_current_ok.value, f'Response value: {vset.value} not the expected one: {vs_request_current_ok.value}'
     assert vset.is_current, "Valueset returned is not current"
 
+
 def test_get_vs_by_accession_missing(vs_servicer, vs_request_missing, context):
     response = vs_servicer.GetValueSetByAccessionId(request=vs_request_missing, context=context)
     assert len(response.valuesets) == 0, f'Got {len(response.valuesets)} valusets while expecting an empty response'
+
 
 def test_get_vs_by_accession_error(vs_servicer, vs_request_empty, context):
     try:
         response = vs_servicer.GetValueSetByAccessionId(request=vs_request_empty, context=context)
     except grpc.RpcError as e:
         assert e.code() == grpc.StatusCode.INVALID_ARGUMENT, "Didn't raise the expected error INVALID_ARGUMENT"
+
 
 def test_get_vs_by_value_current_success(vs_servicer, vs_request_current_ok, context):
     response = vs_servicer.GetValueSetsByValue(request=vs_request_current_ok, context=context)
@@ -119,6 +131,7 @@ def test_get_vs_by_value_current_success(vs_servicer, vs_request_current_ok, con
     assert vset.accession_id == vs_request_current_ok.accession_id, f'Response accession_id: {vset.accession_id} not the expected one: {vs_request_current_ok.accession_id}'
     assert vset.value == vs_request_current_ok.value, f'Response value: {vset.value} not the expected one: {vs_request_current_ok.value}'
     assert vset.is_current, "Valueset returned is not current"
+
 
 def test_get_vs_by_value_success(vs_servicer, vs_request_noncurr_ok, context):
     response = vs_servicer.GetValueSetsByValue(request=vs_request_noncurr_ok, context=context)
@@ -129,9 +142,11 @@ def test_get_vs_by_value_success(vs_servicer, vs_request_noncurr_ok, context):
         check += 1 if v.is_current else -1
     assert check == 0
 
+
 def test_get_vs_by_value_missing(vs_servicer, vs_request_missing, context):
     response = vs_servicer.GetValueSetsByValue(request=vs_request_missing, context=context)
     assert len(response.valuesets) == 0, f'Got {len(response.valuesets)} valusets while expecting an empty response'
+
 
 def test_get_vs_by_value_error(vs_servicer, vs_request_empty, context):
     try:
@@ -139,12 +154,14 @@ def test_get_vs_by_value_error(vs_servicer, vs_request_empty, context):
     except grpc.RpcError as e:
         assert e.code() == grpc.StatusCode.INVALID_ARGUMENT, "Didn't raise the expected error INVALID_ARGUMENT"
 
+
 def test_get_vs_by_domain_current_success(vs_servicer, vs_request_domain_current_ok, context):
     response = vs_servicer.GetValueSetsByDomain(request=vs_request_domain_current_ok, context=context)
     assert len(response.valuesets) == 2, f'Got {len(response.valuesets)} valusets while expecting 2'
     for v in response.valuesets:
         assert vs_request_domain_current_ok.accession_id in v.accession_id, f'Response accession_id: {v.accession_id} does not include the domain: {vs_request_domain_current_ok.accession_id}'
         assert v.is_current, "Valueset returned is not current"
+
 
 def test_get_vs_by_domain_success(vs_servicer, vs_request_domain_noncurr_ok, context):
     response = vs_servicer.GetValueSetsByDomain(request=vs_request_domain_noncurr_ok, context=context)
@@ -155,9 +172,11 @@ def test_get_vs_by_domain_success(vs_servicer, vs_request_domain_noncurr_ok, con
         check += 1 if v.is_current else -1
     assert check == 0
 
+
 def test_get_vs_by_domain_missing(vs_servicer, vs_request_missing, context):
     response = vs_servicer.GetValueSetsByDomain(request=vs_request_missing, context=context)
     assert len(response.valuesets) == 0, f'Got {len(response.valuesets)} valusets while expecting an empty response'
+
 
 def test_get_vs_by_domain_error(vs_servicer, vs_request_empty, context):
     try:
@@ -165,22 +184,25 @@ def test_get_vs_by_domain_error(vs_servicer, vs_request_empty, context):
     except grpc.RpcError as e:
         assert e.code() == grpc.StatusCode.INVALID_ARGUMENT, "Didn't raise the expected error INVALID_ARGUMENT"
 
+
 def test_get_vs_malformed_request(vs_servicer, context):
     try:
-        request = ValueSetRequest(access_id = 'mane.plus_clinical')
+        request = ValueSetRequest(access_id='mane.plus_clinical')
     except ValueError:
         assert True, "Didn't raise the expected exception: ValueError"
 
+
 def test_get_all_current(vs_servicer, vs_request_domain_current_ok, context):
     response = vs_servicer.GetAllValueSets(request=vs_request_domain_current_ok, context=context)
-    for cnt,vset in enumerate(response, start=1):
+    for cnt, vset in enumerate(response, start=1):
         assert vset.is_current, "Valueset returned is not current"
     assert cnt == 29, f'Got {cnt} current valusets while expecting 29'
+
 
 def test_get_all(vs_servicer, vs_request_domain_noncurr_ok, context):
     response = vs_servicer.GetAllValueSets(request=vs_request_domain_noncurr_ok, context=context)
     cnt_noncurr = 0
-    for cnt,vset in enumerate(response, start=1):
+    for cnt, vset in enumerate(response, start=1):
         cnt_noncurr += 0 if vset.is_current else 1
     assert cnt == 31, f'Got {cnt} valusets while expecting 31'
     assert cnt_noncurr == 2, f'Got {cnt_noncurr} non current valusets while expecting 2'

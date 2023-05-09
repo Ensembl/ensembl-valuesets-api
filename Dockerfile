@@ -28,5 +28,5 @@ WORKDIR /opt/ensembl-valuesets-api
 
 RUN pip install --no-cache-dir .
 
-CMD ["python", "src/python/ensembl/valuesets/valuesets_rpc_server.py"]
+CMD ["python", "src/grpc/ensembl/valuesets_rpc_server.py"]
 EXPOSE ${SERVER_PORT}
