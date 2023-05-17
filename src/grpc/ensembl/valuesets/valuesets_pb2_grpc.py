@@ -15,25 +15,25 @@ class ValueSetStub(object):
             channel: A grpc.Channel.
         """
         self.GetValueSetByAccessionId = channel.unary_unary(
-            '/ValueSet/GetValueSetByAccessionId',
-            request_serializer=valuesets__pb2.ValueSetRequest.SerializeToString,
-            response_deserializer=valuesets__pb2.ValueSetList.FromString,
-        )
+                '/ValueSet/GetValueSetByAccessionId',
+                request_serializer=valuesets__pb2.ValueSetRequest.SerializeToString,
+                response_deserializer=valuesets__pb2.ValueSetList.FromString,
+                )
         self.GetValueSetsByValue = channel.unary_unary(
-            '/ValueSet/GetValueSetsByValue',
-            request_serializer=valuesets__pb2.ValueSetRequest.SerializeToString,
-            response_deserializer=valuesets__pb2.ValueSetList.FromString,
-        )
+                '/ValueSet/GetValueSetsByValue',
+                request_serializer=valuesets__pb2.ValueSetRequest.SerializeToString,
+                response_deserializer=valuesets__pb2.ValueSetList.FromString,
+                )
         self.GetValueSetsByDomain = channel.unary_unary(
-            '/ValueSet/GetValueSetsByDomain',
-            request_serializer=valuesets__pb2.ValueSetRequest.SerializeToString,
-            response_deserializer=valuesets__pb2.ValueSetList.FromString,
-        )
+                '/ValueSet/GetValueSetsByDomain',
+                request_serializer=valuesets__pb2.ValueSetRequest.SerializeToString,
+                response_deserializer=valuesets__pb2.ValueSetList.FromString,
+                )
         self.GetAllValueSets = channel.unary_stream(
-            '/ValueSet/GetAllValueSets',
-            request_serializer=valuesets__pb2.ValueSetRequest.SerializeToString,
-            response_deserializer=valuesets__pb2.ValueSetItem.FromString,
-        )
+                '/ValueSet/GetAllValueSets',
+                request_serializer=valuesets__pb2.ValueSetRequest.SerializeToString,
+                response_deserializer=valuesets__pb2.ValueSetItem.FromString,
+                )
 
 
 class ValueSetServicer(object):
@@ -66,101 +66,100 @@ class ValueSetServicer(object):
 
 def add_ValueSetServicer_to_server(servicer, server):
     rpc_method_handlers = {
-        'GetValueSetByAccessionId': grpc.unary_unary_rpc_method_handler(
-            servicer.GetValueSetByAccessionId,
-            request_deserializer=valuesets__pb2.ValueSetRequest.FromString,
-            response_serializer=valuesets__pb2.ValueSetList.SerializeToString,
-        ),
-        'GetValueSetsByValue': grpc.unary_unary_rpc_method_handler(
-            servicer.GetValueSetsByValue,
-            request_deserializer=valuesets__pb2.ValueSetRequest.FromString,
-            response_serializer=valuesets__pb2.ValueSetList.SerializeToString,
-        ),
-        'GetValueSetsByDomain': grpc.unary_unary_rpc_method_handler(
-            servicer.GetValueSetsByDomain,
-            request_deserializer=valuesets__pb2.ValueSetRequest.FromString,
-            response_serializer=valuesets__pb2.ValueSetList.SerializeToString,
-        ),
-        'GetAllValueSets': grpc.unary_stream_rpc_method_handler(
-            servicer.GetAllValueSets,
-            request_deserializer=valuesets__pb2.ValueSetRequest.FromString,
-            response_serializer=valuesets__pb2.ValueSetItem.SerializeToString,
-        ),
+            'GetValueSetByAccessionId': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetValueSetByAccessionId,
+                    request_deserializer=valuesets__pb2.ValueSetRequest.FromString,
+                    response_serializer=valuesets__pb2.ValueSetList.SerializeToString,
+            ),
+            'GetValueSetsByValue': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetValueSetsByValue,
+                    request_deserializer=valuesets__pb2.ValueSetRequest.FromString,
+                    response_serializer=valuesets__pb2.ValueSetList.SerializeToString,
+            ),
+            'GetValueSetsByDomain': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetValueSetsByDomain,
+                    request_deserializer=valuesets__pb2.ValueSetRequest.FromString,
+                    response_serializer=valuesets__pb2.ValueSetList.SerializeToString,
+            ),
+            'GetAllValueSets': grpc.unary_stream_rpc_method_handler(
+                    servicer.GetAllValueSets,
+                    request_deserializer=valuesets__pb2.ValueSetRequest.FromString,
+                    response_serializer=valuesets__pb2.ValueSetItem.SerializeToString,
+            ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-        'ValueSet', rpc_method_handlers)
+            'ValueSet', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
 
 
-# This class is part of an EXPERIMENTAL API.
+ # This class is part of an EXPERIMENTAL API.
 class ValueSet(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
     def GetValueSetByAccessionId(request,
-                                 target,
-                                 options=(),
-                                 channel_credentials=None,
-                                 call_credentials=None,
-                                 insecure=False,
-                                 compression=None,
-                                 wait_for_ready=None,
-                                 timeout=None,
-                                 metadata=None):
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
         return grpc.experimental.unary_unary(request, target, '/ValueSet/GetValueSetByAccessionId',
-                                             valuesets__pb2.ValueSetRequest.SerializeToString,
-                                             valuesets__pb2.ValueSetList.FromString,
-                                             options, channel_credentials,
-                                             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+            valuesets__pb2.ValueSetRequest.SerializeToString,
+            valuesets__pb2.ValueSetList.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def GetValueSetsByValue(request,
-                            target,
-                            options=(),
-                            channel_credentials=None,
-                            call_credentials=None,
-                            insecure=False,
-                            compression=None,
-                            wait_for_ready=None,
-                            timeout=None,
-                            metadata=None):
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
         return grpc.experimental.unary_unary(request, target, '/ValueSet/GetValueSetsByValue',
-                                             valuesets__pb2.ValueSetRequest.SerializeToString,
-                                             valuesets__pb2.ValueSetList.FromString,
-                                             options, channel_credentials,
-                                             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+            valuesets__pb2.ValueSetRequest.SerializeToString,
+            valuesets__pb2.ValueSetList.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def GetValueSetsByDomain(request,
-                             target,
-                             options=(),
-                             channel_credentials=None,
-                             call_credentials=None,
-                             insecure=False,
-                             compression=None,
-                             wait_for_ready=None,
-                             timeout=None,
-                             metadata=None):
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
         return grpc.experimental.unary_unary(request, target, '/ValueSet/GetValueSetsByDomain',
-                                             valuesets__pb2.ValueSetRequest.SerializeToString,
-                                             valuesets__pb2.ValueSetList.FromString,
-                                             options, channel_credentials,
-                                             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+            valuesets__pb2.ValueSetRequest.SerializeToString,
+            valuesets__pb2.ValueSetList.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def GetAllValueSets(request,
-                        target,
-                        options=(),
-                        channel_credentials=None,
-                        call_credentials=None,
-                        insecure=False,
-                        compression=None,
-                        wait_for_ready=None,
-                        timeout=None,
-                        metadata=None):
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
         return grpc.experimental.unary_stream(request, target, '/ValueSet/GetAllValueSets',
-                                              valuesets__pb2.ValueSetRequest.SerializeToString,
-                                              valuesets__pb2.ValueSetItem.FromString,
-                                              options, channel_credentials,
-                                              insecure, call_credentials, compression, wait_for_ready, timeout,
-                                              metadata)
+            valuesets__pb2.ValueSetRequest.SerializeToString,
+            valuesets__pb2.ValueSetItem.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

@@ -14,7 +14,7 @@
 #  limitations under the License.
 """Ensembl ValueSets client example."""
 
-import grpc
+from src import grpc
 from src.grpc.ensembl.valuesets.valuesets_pb2 import ValueSetRequest
 from src.grpc.ensembl.valuesets.valuesets_pb2_grpc import ValueSetStub
 

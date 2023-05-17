@@ -25,6 +25,7 @@ A ValueSet item should have the following fields:
 - grpcio 
 - grpcio-tools 1.30+
 - openpyxl 3.\*+ (optional)
+- poetry
 
 - Python packages
   - Test
@@ -144,6 +145,41 @@ Mypy will use type hints to statically type check the code.
 
 It should be relatively easy (and definitely useful) to integrate both `pylint` and `mypy`
 in your IDE/Text editor.
+
+### Project setup with poetry
+
+Clone this repo:
+```
+git clone --depth 1 -b main https://github.com/Ensembl/ensembl-valuesets-api.git
+```
+
+Create virtual environment
+```
+poetry env use python3
+```
+
+Verify when virtual environment is activated or not
+```
+poetry env list
+```
+
+Install the dependencies
+```
+poetry install
+```
+
+Run the grpc and rest server from project directory
+```
+poetry run python3 -m src.grpc.ensembl.server
+poetry run python3 -m uvicorn src.rest.server:app
+```
+
+Test the rest endpoints
+```
+curl --location --request GET 'http://localhost:8000/api/valuesets/accession_id/mane.select'
+curl --location --request GET 'http://localhost:8000/api/valuesets/value/amino_acid_alphabet?is_current=true'
+curl --location --request GET 'http://localhost:8000/api/valuesets?is_current=false'
+```
 
 
 ## Resources

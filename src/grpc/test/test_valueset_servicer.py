@@ -21,7 +21,7 @@ from src import grpc
 
 from src.common.valuesets_data import ValueSetData
 from src.common.config import Config
-from src.grpc.ensembl.valuesets_rpc_server import ValueSetGetterServicer
+from src.grpc.ensembl.server import ValueSetGetterServicer
 from src.grpc.ensembl.valuesets.valuesets_pb2 import ValueSetRequest
 
 from urllib.parse import urlparse
