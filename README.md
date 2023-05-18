@@ -1,8 +1,7 @@
-# Ensembl Python Template
+# Ensembl ValueSet API
 
 [![Documentation Status](https://readthedocs.org/projects/template-python/badge/?version=latest)](http://template-python.readthedocs.io/en/latest/?badge=latest) [![Build Status](https://travis-ci.com/Ensembl/template-python.svg?branch=main)](https://travis-ci.com/Ensembl/template-python)
 
-Ensembl ValueSet API Project.
 
 This repo contains code for the ValueSets API app.
 The ValueSets API expose gRPC end points for providing information
@@ -145,15 +144,16 @@ Mypy will use type hints to statically type check the code.
 
 It should be relatively easy (and definitely useful) to integrate both `pylint` and `mypy`
 in your IDE/Text editor.
+---
+## Project setup with poetry
 
-### Project setup with poetry
-
+### Installing ensembl-valuesets-api from github (For development)
 Clone this repo:
 ```
 git clone --depth 1 -b main https://github.com/Ensembl/ensembl-valuesets-api.git
 ```
 
-Create virtual environment
+Navigate to repo directory and create virtual environment
 ```
 poetry env use python3
 ```
@@ -181,6 +181,39 @@ curl --location --request GET 'http://localhost:8000/api/valuesets/value/amino_a
 curl --location --request GET 'http://localhost:8000/api/valuesets?is_current=false'
 ```
 
+### Building and publishing project to PyPi using poetry
+Configure PyPi API token
+```
+poetry config pypi-token.pypi API_TOKEN
+```
+Build and publish package to pypi
+```
+poetry publish --build
+```
+
+### Installing ensembl-valuesets-api from PyPi
+Create a virtual environment
+```
+python3 -m venv venv
+```
+Activate the venv
+```
+source venv/bin/activate
+```
+Install [ensembl-valuesets](https://pypi.org/project/ensembl-valuesets/)
+```
+pip install ensembl-valuesets
+```
+Start the REST server using the ensembl_valuesets_rest startup script (without active venv)
+```
+./venv/bin/ensembl_valuesets_rest
+```
+Start the gRPC server using the ensembl_valuesets_grpc startup script (without active venv)
+```
+./venv/bin/ensembl_valuesets_grpc
+```
+
+---
 
 ## Resources
 
