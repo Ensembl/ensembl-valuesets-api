@@ -1,31 +1,3 @@
-#[project]
-#    name = "ensembl_valuesets"
-#    description = "Ensembl ValueSets gRPC/REST API"
-#    readme = "README.md"
-#    authors = [
-#        {name = "Ensembl", email = "dev@ensembl.org"},
-#    ]
-#    license = { text = "Apache License 2.0" }
-#    classifiers = [
-#        "Development Status :: 3 - Alpha",
-#        "Environment :: Console",
-#        "Intended Audience :: Science/Research",
-#        "License :: OSI Approved :: Apache Software License",
-#        "Operating System :: OS Independent",
-#        "Natural Language :: English",
-#        "Programming Language :: Python :: 3",
-#        "Programming Language :: Python :: 3.10",
-#        "Programming Language :: Python :: 3.11",
-#        "Topic :: Scientific/Engineering :: Bio-Informatics",
-#        "Topic :: Software Development :: Libraries :: Python Modules",
-#    ]
-
-
-#[project.scripts]
-#    ens_vset_run = "src.grpc.ensembl.server:main"
-#    ens_vset_makejson = "src.common.utils.from_xlsx_to_json:main"
-#    ens_vset_client = "src.grpc.ensembl.client:main"
-
 [tool.poetry]
     name = "ensembl_valuesets"
     version = "0.1.0"
@@ -35,7 +7,13 @@
     readme = "README.md"
     homepage = "https://www.ensembl.org"
     repository = "https://github.com/Ensembl/ensembl-valuesets-api"
+    packages = [
+        { include = "src" },
+    ]
 
+[tool.poetry.scripts]
+    ensembl_valuesets_grpc = 'src.grpcapi.ensembl.server:main'
+    ensembl_valuesets_rest = 'src.rest.server:start'
 
 [tool.poetry.dependencies]
     python = "^3.10"
@@ -54,11 +32,15 @@
     pytest = "^7.3"
     pylint = "*"
     mypy = "*"
-    coverage = "*"
+    coverage = "^7.2.5"
     mock = "*"
-    black = "*"
+    black = "^23.3.0"
     ipython = "*"
 
+[tool.poetry.group.dev.dependencies]
+    types-protobuf = "^4.23.0.1"
+    types-requests = "^2.30.0.0"
+    pre-commit = "^3.3.2"
 
 [build-system]
     requires = [
@@ -66,21 +48,20 @@
     ]
     build-backend = "poetry.core.masonry.api"
 
-#[tool.mypy]
-#    mypy_path = "src"
-#    ignore_missing_imports = true
-#
-#[tool.black]
-#    line-length = 110
-#
-#[tool.coverage.run]
-#    branch = true
-#    source = [
-#        "src/grpc/test",
-#    ]
-#
-#[tool.pytest.ini_options]
-#    addopts = "-v --tb=native"
-#    testpaths = ["src/grpc/test"]
-#    norecursedirs = ["data", "tmp*", "env", "docs", "apps", "basic_modules", "*.egg_info"]
+[tool.mypy]
+    mypy_path = "src"
+    ignore_missing_imports = true
 
+[tool.black]
+    line-length = 110
+
+[tool.coverage.run]
+    branch = true
+    source = [
+        "src",
+    ]
+
+[tool.pytest.ini_options]
+    addopts = "-v --tb=native"
+    testpaths = ["src/test"]
+    norecursedirs = ["data", "tmp*", "env", "docs", "apps", "basic_modules", "*.egg_info"]

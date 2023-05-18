@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import logging
 
 from src.rest.routes import router
-from src.rest.models import ErrorResponse
+from src.rest.model import ErrorResponse
 
 log = logging.getLogger(__name__)
 
@@ -38,5 +38,10 @@ async def error_500(_: Request, error: HTTPException):
         message="Internal Server Error",
     )
 
+
+def start():
+    uvicorn.run("src.rest.server:app", host="0.0.0.0", port=8000)
+
+
 if __name__ == "__main__":
-    uvicorn.run("server:app", reload=True)
+    start()

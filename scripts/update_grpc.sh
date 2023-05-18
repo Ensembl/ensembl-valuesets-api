@@ -15,7 +15,7 @@
 # limitations under the License.
 
 REPO_ROOT=..
-SRC_ROOT=../src/grpc
+SRC_ROOT=../src/grpcapi
 
 python3 -m grpc_tools.protoc -I ${REPO_ROOT}/protobufs \
 	--python_out=${SRC_ROOT}/ensembl/valuesets \
