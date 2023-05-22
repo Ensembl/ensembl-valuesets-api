@@ -144,7 +144,9 @@ Mypy will use type hints to statically type check the code.
 
 It should be relatively easy (and definitely useful) to integrate both `pylint` and `mypy`
 in your IDE/Text editor.
+
 ---
+
 ## Project setup with poetry
 
 ### Installing ensembl-valuesets-api from github (For development)
@@ -170,7 +172,7 @@ poetry install
 
 Run the grpc and rest server from project directory
 ```
-poetry run python3 -m src.grpc.ensembl.server
+poetry run python3 -m src.grpcapi.ensembl.server
 poetry run python3 -m uvicorn src.rest.server:app
 ```
 
@@ -180,6 +182,34 @@ curl --location --request GET 'http://localhost:8000/api/valuesets/accession_id/
 curl --location --request GET 'http://localhost:8000/api/valuesets/value/amino_acid_alphabet?is_current=true'
 curl --location --request GET 'http://localhost:8000/api/valuesets?is_current=false'
 ```
+
+### Testing, Test Coverage, Type checking and Pre-commit hook
+Running unit test cases
+```
+poetry run pytest
+```
+Generate test coverage report
+```
+poetry run coverage run -m pytest
+```
+Generate test coverage HTML reports in htmlcov/index.html
+```
+poetry run coverage html
+```
+Running Black code formatter (Added in pre-commit config)
+```
+poetry run black src
+```
+Running mypy type checker (Added in pre-commit config)
+```
+poetry run mypy src
+```
+Before committing/pushing any changes install the pre commit hook (.pre-commit-config.yaml). We'll be able to push 
+the changes only If the build is successful.
+```
+poetry run pre-commit install
+```
+
 
 ### Building and publishing project to PyPi using poetry
 Configure PyPi API token
