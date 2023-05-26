@@ -1,86 +1,55 @@
-[project]
+[tool.poetry]
     name = "ensembl_valuesets"
-    dynamic = [
-        "version",
-    ]
-    requires-python = ">= 3.10"
-    description = "Ensembl ValueSets gRPC API"
+    version = "0.1.0"
+    description = "Ensembl ValueSets gRPC/REST API"
+    authors = ["Ensembl <dev@ensembl.org>"]
+    license = "Apache-2.0"
     readme = "README.md"
-    authors = [
-        {name = "Ensembl", email = "dev@ensembl.org"},
-    ]
-    license = { text = "Apache License 2.0" }
-    classifiers = [
-        "Development Status :: 3 - Alpha",
-        "Environment :: Console",
-        "Intended Audience :: Science/Research",
-        "License :: OSI Approved :: Apache Software License",
-        "Operating System :: OS Independent",
-        "Natural Language :: English",
-        "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.10",
-        "Programming Language :: Python :: 3.11",
-        "Topic :: Scientific/Engineering :: Bio-Informatics",
-        "Topic :: Software Development :: Libraries :: Python Modules",
-    ]
-    dependencies = [
-        "grpcio >= 1.54.0",
-        "grpcio-tools >= 1.54.0",
-        "openpyxl >= 3.1.2",
-        "pandas >= 2.0.1",
-        "protobuf >= 4.22.3",
-        "typer >= 0.7",
-        "requests >= 2.28.2",
-    ]
-
-[project.optional-dependencies]
-    dev = [
-        "black",
-        "ipython",
-        "mock",
-        "Sphinx",
-    ]
-    test = [
-        "pytest",
-        "pylint",
-        "mypy",
-        "coverage",
-        "mock",
-        "Sphinx",
-    ]
-    doc = [
-        "mock",
-        "Sphinx",
-    ]
-
-[project.urls]
     homepage = "https://www.ensembl.org"
     repository = "https://github.com/Ensembl/ensembl-valuesets-api"
+    packages = [
+        { include = "src" },
+    ]
 
-[project.scripts]
-    ens_vset_run = "ensembl.valuesets.valuesets_rpc_server:main"
-    ens_vset_makejson = "ensembl.utils.from_xlsx_to_json.py:main"
-    ens_vset_client = "ensembl.utils.valuesets_rpc_tinyclient:main"
+[tool.poetry.scripts]
+    ensembl_valuesets_grpc = 'src.grpcapi.ensembl.server:main'
+    ensembl_valuesets_rest = 'src.rest.server:start'
 
-[tool.setuptools]
-package-dir = {"" = "src/python"}
+[tool.poetry.dependencies]
+    python = "^3.10"
+    grpcio = "^1.54.0"
+    grpcio-tools = "^1.54.0"
+    openpyxl = "^3.1.2"
+    pandas = "^2.0.1"
+    protobuf = "^4.22.3"
+    typer = "^0.9"
+    requests = "^2.28.2"
+    uvicorn = "^0.22.0"
+    fastapi = "^0.95.0"
+    pydantic = "^1.10"
 
-[tool.setuptools.dynamic]
-version = {attr = "ensembl.valuesets.__version__"}
+[tool.poetry.dev-dependencies]
+    pytest = "^7.3"
+    pylint = "*"
+    mypy = "*"
+    coverage = "^7.2.5"
+    mock = "*"
+    black = "^23.3.0"
+    ipython = "*"
 
-[tool.setuptools.packages.find]
-where = ["src/python"]  # list of folders that contain the packages (["."] by default)
+[tool.poetry.group.dev.dependencies]
+    types-protobuf = "^4.23.0.1"
+    types-requests = "^2.30.0.0"
+    pre-commit = "^3.3.2"
 
 [build-system]
     requires = [
-        "setuptools",
-        "setuptools-scm",
-        "wheel"
+        "poetry-core >= 1.4.0"
     ]
-    build-backend = "setuptools.build_meta"
+    build-backend = "poetry.core.masonry.api"
 
 [tool.mypy]
-    mypy_path = "src/python"
+    mypy_path = "src"
     ignore_missing_imports = true
 
 [tool.black]
@@ -89,11 +58,10 @@ where = ["src/python"]  # list of folders that contain the packages (["."] by de
 [tool.coverage.run]
     branch = true
     source = [
-        "src/python",
+        "src",
     ]
 
 [tool.pytest.ini_options]
     addopts = "-v --tb=native"
-    testpaths = ["src/python/tests"]
+    testpaths = ["src/test"]
     norecursedirs = ["data", "tmp*", "env", "docs", "apps", "basic_modules", "*.egg_info"]
-

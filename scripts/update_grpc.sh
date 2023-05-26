@@ -14,10 +14,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-REPO_ROOT=../
-SRC_ROOT=../src/python/
+REPO_ROOT=..
+SRC_ROOT=../src/grpcapi
 
-python -m grpc_tools.protoc -I ${REPO_ROOT}/protobufs \
+python3 -m grpc_tools.protoc -I ${REPO_ROOT}/protobufs \
 	--python_out=${SRC_ROOT}/ensembl/valuesets \
 	--grpc_python_out=${SRC_ROOT}/ensembl/valuesets \
 	${REPO_ROOT}/protobufs/valuesets.proto

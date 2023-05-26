@@ -15,8 +15,8 @@
 """Ensembl ValueSets client example."""
 
 import grpc
-from ensembl.valuesets.valuesets_pb2 import ValueSetRequest
-from ensembl.valuesets.valuesets_pb2_grpc import ValueSetStub
+from src.grpcapi.ensembl.valuesets.valuesets_pb2 import ValueSetRequest
+from src.grpcapi.ensembl.valuesets.valuesets_pb2_grpc import ValueSetStub
 
 from typer import Typer
 
@@ -54,9 +54,9 @@ def get_vs_by_value(value: str, is_current: bool = True):
     client = init_client()
     request = ValueSetRequest(value=value, is_current=is_current)
     vsets = client.GetValueSetsByValue(request).valuesets
-    print(f'Returned {len(vsets)} ValueSets')
+    print(f"Returned {len(vsets)} ValueSets")
     for vv in vsets:
-        print(f'{vv.accession_id} - {vv.is_current}')
+        print(f"{vv.accession_id} - {vv.is_current}")
 
 
 @client_app.command()
@@ -64,9 +64,9 @@ def get_vs_by_domain(domain: str, is_current: bool = True):
     client = init_client()
     request = ValueSetRequest(accession_id=domain, is_current=is_current)
     vsets = client.GetValueSetsByDomain(request).valuesets
-    print(f'Returned {len(vsets)} ValueSets')
+    print(f"Returned {len(vsets)} ValueSets")
     for vv in vsets:
-        print(f'{vv.accession_id} - {vv.is_current}')
+        print(f"{vv.accession_id} - {vv.is_current}")
 
 
 if __name__ == "__main__":

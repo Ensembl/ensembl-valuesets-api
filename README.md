@@ -1,8 +1,7 @@
-# Ensembl Python Template
+# Ensembl ValueSet API
 
 [![Documentation Status](https://readthedocs.org/projects/template-python/badge/?version=latest)](http://template-python.readthedocs.io/en/latest/?badge=latest) [![Build Status](https://travis-ci.com/Ensembl/template-python.svg?branch=main)](https://travis-ci.com/Ensembl/template-python)
 
-Ensembl ValueSet API Project.
 
 This repo contains code for the ValueSets API app.
 The ValueSets API expose gRPC end points for providing information
@@ -25,6 +24,7 @@ A ValueSet item should have the following fields:
 - grpcio 
 - grpcio-tools 1.30+
 - openpyxl 3.\*+ (optional)
+- poetry
 
 - Python packages
   - Test
@@ -145,6 +145,105 @@ Mypy will use type hints to statically type check the code.
 It should be relatively easy (and definitely useful) to integrate both `pylint` and `mypy`
 in your IDE/Text editor.
 
+---
+
+## Project setup with poetry
+
+### Installing ensembl-valuesets-api from github (For development)
+Clone this repo:
+```
+git clone --depth 1 -b main https://github.com/Ensembl/ensembl-valuesets-api.git
+```
+
+Navigate to repo directory and create virtual environment
+```
+poetry env use python3
+```
+
+Verify when virtual environment is activated or not
+```
+poetry env list
+```
+
+Install the dependencies
+```
+poetry install
+```
+
+Run the grpc and rest server from project directory
+```
+poetry run python3 -m src.grpcapi.ensembl.server
+poetry run python3 -m uvicorn src.rest.server:app
+```
+
+Test the rest endpoints
+```
+curl --location --request GET 'http://localhost:8000/api/valuesets/accession_id/mane.select'
+curl --location --request GET 'http://localhost:8000/api/valuesets/value/amino_acid_alphabet?is_current=true'
+curl --location --request GET 'http://localhost:8000/api/valuesets?is_current=false'
+```
+
+### Testing, Test Coverage, Type checking and Pre-commit hook
+Running unit test cases
+```
+poetry run pytest
+```
+Generate test coverage report
+```
+poetry run coverage run -m pytest
+```
+Generate test coverage HTML reports in htmlcov/index.html
+```
+poetry run coverage html
+```
+Running Black code formatter (Added in pre-commit config)
+```
+poetry run black src
+```
+Running mypy type checker (Added in pre-commit config)
+```
+poetry run mypy src
+```
+Before committing/pushing any changes install the pre commit hook (.pre-commit-config.yaml). We'll be able to push 
+the changes only If the build is successful.
+```
+poetry run pre-commit install
+```
+
+
+### Building and publishing project to PyPi using poetry
+Configure PyPi API token
+```
+poetry config pypi-token.pypi API_TOKEN
+```
+Build and publish package to pypi
+```
+poetry publish --build
+```
+
+### Installing ensembl-valuesets-api from PyPi
+Create a virtual environment
+```
+python3 -m venv venv
+```
+Activate the venv
+```
+source venv/bin/activate
+```
+Install [ensembl-valuesets](https://pypi.org/project/ensembl-valuesets/)
+```
+pip install ensembl-valuesets
+```
+Start the REST server using the ensembl_valuesets_rest startup script (without active venv)
+```
+./venv/bin/ensembl_valuesets_rest
+```
+Start the gRPC server using the ensembl_valuesets_grpc startup script (without active venv)
+```
+./venv/bin/ensembl_valuesets_grpc
+```
+
+---
 
 ## Resources
 
