@@ -1,0 +1,219 @@
+{
+    "mane.select": [
+        "MANE Select",
+        "select",
+        1,
+        "The Matched Annotation from NCBI and EMBL-EBI is a collaboration between Ensembl/GENCODE and RefSeq. The MANE Select is a default transcript per human gene that is representative of biology, well-supported, expressed and highly-conserved. This transcript set matches GRCh38 and is 100% identical between RefSeq and Ensembl/GENCODE for 5' UTR, CDS, splicing and 3'UTR.",
+        ""
+    ],
+    "mane.select2": [
+        "MANE Select",
+        "select",
+        0,
+        "Some old and outdated definition.",
+        "Some outdated very long description: lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+    ],
+    "mane.plus_clinical": [
+        "MANE Plus Clinical",
+        "plus_clinical",
+        1,
+        "Transcripts in the MANE Plus Clinical set are additional transcripts per locus necessary to support clinical variant reporting, for example transcripts containing known Pathogenic or Likely Pathogenic clinical variants not reportable using the MANE Select set. Note there may be additional clinically relevant transcripts in the wider RefSeq and Ensembl/GENCODE sets but not yet in MANE.",
+        ""
+    ],
+    "mane.plus_clinical2": [
+        "MANE Plus Clinical",
+        "plus_clinical",
+        0,
+        "Some outdated and msispelled dfefinition",
+        ""
+    ],
+    "alphabet.dna": [
+        "DNA alphabet",
+        "dna_alphabet",
+        1,
+        "IUPAC notation for DNA sequence",
+        "Adenine, guanine, cytosine, and thymine, represented by A, G, C, and T inline with the IUPAC specification."
+    ],
+    "alphabet.rna": [
+        "RNA alphabet",
+        "rna_alphabet",
+        1,
+        "IUPAC notation for RNA sequence",
+        "Guanine, uracil, adenine, and cytosine, represented  by G, U, A, and C inline with the IUPAC specification."
+    ],
+    "alphabet.amino_acid": [
+        "Amino acid notation",
+        "amino_acid_alphabet",
+        1,
+        "IUPAC notation for amino acids",
+        "One letter representation of amino acids inline with the IUPAC specification."
+    ],
+    "external_reference_assignment_type.checksum": [
+        "Checksum",
+        "checksum",
+        1,
+        "",
+        ""
+    ],
+    "external_reference_assignment_type.coordinate_overlap": [
+        "Coordinate overlap",
+        "coordinate_overlap",
+        1,
+        "",
+        ""
+    ],
+    "external_reference_assignment_type.dependent": [
+        "Dependent",
+        "dependent",
+        1,
+        "",
+        ""
+    ],
+    "external_reference_assignment_type.direct": [
+        "Direct",
+        "direct",
+        1,
+        "",
+        ""
+    ],
+    "external_reference_assignment_type.inferred_pair": [
+        "Inferred pair",
+        "inferred_pair",
+        1,
+        "",
+        ""
+    ],
+    "external_reference_assignment_type.misc": [
+        "Misc",
+        "misc",
+        1,
+        "",
+        ""
+    ],
+    "external_reference_assignment_type.none": [
+        "None",
+        "none",
+        1,
+        "",
+        ""
+    ],
+    "external_reference_assignment_type.probe": [
+        "Probe",
+        "probe",
+        1,
+        "",
+        ""
+    ],
+    "external_reference_assignment_type.projection": [
+        "Projection",
+        "projection",
+        1,
+        "",
+        ""
+    ],
+    "external_reference_assignment_type.sequence_match": [
+        "Sequence match",
+        "sequence_match",
+        1,
+        "",
+        ""
+    ],
+    "external_reference_assignment_type.unmapped": [
+        "Unmapped",
+        "unmapped",
+        1,
+        "",
+        ""
+    ],
+    "tsl.level_1": [
+        "TSL level 1",
+        "",
+        1,
+        "Transcript support level 1",
+        "A transcript where all splice junctions are supported by at least one non-suspect mRNA."
+    ],
+    "tsl.level_2": [
+        "TSL level 2",
+        "",
+        1,
+        "Transcript support level 2",
+        "A transcript where the best supporting mRNA is flagged as suspect or the support is from multiple ESTs"
+    ],
+    "tsl.level_3": [
+        "TSL level 3",
+        "",
+        1,
+        "Transcript support level 3",
+        "A transcript where the only support is from a single EST"
+    ],
+    "tsl.level_4": [
+        "TSL level 4",
+        "",
+        1,
+        "Transcript support level 4",
+        "A transcript where the best supporting EST is flagged as suspect"
+    ],
+    "tsl.level_5": [
+        "TSL level 5",
+        "",
+        1,
+        "Transcript support level 5",
+        "A transcript where no single transcript supports the model structure."
+    ],
+    "tsl.na": [
+        "TSL NA",
+        "",
+        1,
+        "Transcript support level not applicable",
+        "A transcript that was not analysed for TSL."
+    ],
+    "appris.principal1": [
+        "APPRIS P1",
+        "",
+        1,
+        "",
+        "Transcript(s) expected to code for the main functional isoform based solely on the core modules in the APPRIS"
+    ],
+    "appris.principal2": [
+        "APPRIS P2",
+        "",
+        1,
+        "",
+        "Where the APPRIS core modules are unable to choose a clear principal variant (approximately 25% of human protein coding genes), the database chooses two or more of the CDS variants as \"candidates\" to be the principal variant."
+    ],
+    "appris.principal3": [
+        "APPRIS P3",
+        "",
+        1,
+        "",
+        "Where the APPRIS core modules are unable to choose a clear principal variant and there more than one of the variants have distinct CCDS identifiers, APPRIS selects the variant with lowest CCDS identifier as the principal variant. The lower the CCDS identifier, the earlier it was annotated."
+    ],
+    "appris.principal4": [
+        "APPRIS P4",
+        "",
+        1,
+        "",
+        "Where the APPRIS core modules are unable to choose a clear principal CDS and there is more than one variant with a distinct (but consecutive) CCDS identifiers, APPRIS selects the longest CCDS isoform as the principal variant"
+    ],
+    "appris.principal5": [
+        "APPRIS P5",
+        "",
+        1,
+        "",
+        "Where the APPRIS core modules are unable to choose a clear principal variant and none of the candidate variants are annotated by CCDS, APPRIS selects the longest of the candidate isoforms as the principal variant."
+    ],
+    "appris.alternative1": [
+        "APPRIS ALT1",
+        "",
+        1,
+        "",
+        "For genes in which the APPRIS core modules are unable to choose a clear principal isoform, the ALT1 is the candidate transcript(s) models that is conserved in at least three tested species."
+    ],
+    "appris.alternative2": [
+        "APPRIS ALT2",
+        "",
+        1,
+        "",
+        "For genes in which the APPRIS core modules are unable to choose a clear principal isoform, the ALT1 is the candidate transcript(s) models that appear to be conserved in fewer than three tested species."
+    ]
+}
