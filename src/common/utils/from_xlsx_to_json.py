@@ -64,12 +64,12 @@ def read_xlsx(filename: Path, sheet_name: str = "Master") -> dict[str, tuple]:
 
     data = {}
     for row in wsheet.rows:
-        vals = [str(c.value).strip() if c.value else "" for c in row][0:7]
+        vals = [str(c.value).strip() if c.value else "" for c in row][0:10]
         logging.debug(f"Found row: {vals}")
-        # Removing cols D and E, which are unused as of mid-Apr 2023
+        # Removing cols D and E, which are unused as of June 2023
         del vals[3:5]
         # Remaining fields are
-        # Accession_ID, label, value, definition, description
+        # Accession_ID, label, value, definition, description, is_current, attrib_code_biotype_name, attrib_value_biotype_object_type
         data[vals[0]] = tuple(vals[1:])
 
     data.pop("Accession_ID", None)
