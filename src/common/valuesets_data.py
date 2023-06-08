@@ -199,6 +199,5 @@ if __name__ == "__main__":
     vd = ValueSetData(config=conf, autoload=True)
     vs = vd.get_vsdata_by_domain(domain="mane", is_current=True)
     vs_test = [v.accession_id for v in vs if v.accession_id not in ("mane.select", "mane.plus_clinical")]
-    # vs_test = ( v.accession_id for v in vs )
     for i in vs_test:
         print(i)
