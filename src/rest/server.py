@@ -4,8 +4,8 @@ from fastapi.middleware.cors import CORSMiddleware
 
 import logging
 
-from src.rest.routes import router
-from src.rest.model import ErrorResponse
+from rest.routes import router
+from rest.model import ErrorResponse
 
 log = logging.getLogger(__name__)
 

@@ -2,9 +2,9 @@ from typing import List
 
 from fastapi import APIRouter, Depends, HTTPException
 
-from src.rest.model import ValueSetItem
-from src.common.valuesets_data import ValueSetData
-from src.rest.handler import get_value_sets_data, valueset_mapper, valueset_result_mapper
+from rest.model import ValueSetItem
+from common.valuesets_data import ValueSetData
+from rest.handler import get_value_sets_data, valueset_mapper, valueset_result_mapper
 
 router = APIRouter(prefix="/api")
 
@@ -21,17 +21,16 @@ async def fetch_valueset_by_accession_id(
     return valueset_mapper(data)
 
 
-@router.get("/valuesets/value/{value}", response_model=List[ValueSetItem])
-async def fetch_valuesets_by_value(
-    value: str, is_current: bool = False, vs_data: ValueSetData = Depends(get_value_sets_data)
-) -> list[ValueSetItem]:
-    data = vs_data.get_vsdata_by_value(value, is_current)
+@router.get("/valuesets/topic/{topic}", response_model=List[ValueSetItem])
+async def fetch_valueset_by_topic(
+    topic: str, vs_data: ValueSetData = Depends(get_value_sets_data)
+) -> ValueSetItem:
+    data = vs_data.get_vsdata_by_topic(topic, is_current=True)
     if not data:
         raise HTTPException(
-            status_code=404,
-            detail=f"Valueset doesn't exists for value : {value} and is_current : {is_current}",
+            status_code=404, detail=f"Valueset doesn't exists for topic : {topic}"
         )
-    return valueset_result_mapper(data)
+    return valueset_mapper(data)
 
 
 @router.get("/valuesets", response_model=List[ValueSetItem])

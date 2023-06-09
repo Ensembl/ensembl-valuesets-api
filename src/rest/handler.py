@@ -1,8 +1,8 @@
 from typing import Any
 
-from src.common.config import default_conf
-from src.common.valuesets_data import ValueSetData
-from src.rest.model import ValueSetItem
+from common.config import default_conf
+from common.valuesets_data import ValueSetData
+from rest.model import ValueSetItem
 
 
 async def get_value_sets_data():
