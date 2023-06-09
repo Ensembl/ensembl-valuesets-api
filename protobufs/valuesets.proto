@@ -19,7 +19,7 @@ syntax = "proto3";
 message ValueSetItem {
     
     // Required field identifying the ValueSet
-    // This has the format `topic`.`unique_identifier` - e.g. mane.select
+    // This has the format `topic`.`unique_identifier` - e.g. mane.select.1
     string accession_id = 1;
     
     // Required field containing a short human readable name for the ValueSet item, 
@@ -30,50 +30,27 @@ message ValueSetItem {
     // This should be lowercase and snake_case - e.g. "protein_coding_gene"
     optional string value = 3; 
 
-    // Optional field containing a flag to state whether ValueSet is current or not
-    optional bool is_current = 4;
-
     // Optional field containing a short description of the ValueSet item
-    optional string definition = 5;
+    optional string definition = 4;
 
     // Optional field containing a more verbose definition of the ValueSet item
-    optional string description = 6;
-}
+    optional string description = 5;
 
-
-// List of ValueSet items to be returned as response to a RPC
-message ValueSetList {
-    repeated ValueSetItem valuesets = 1;
-}
-
-
-// Options to limit or otherwise customise the ValueSetRequest
-message ValueSetRequestOptions {
-  // Field-level read mask of which fields to return. Only fields that
-  // were requested will be returned in the response.
-  // Labels are always returned as fields
-  optional ValueSetReadMask read_mask = 1;
-
-  message ValueSetReadMask {
-    repeated string field_name = 1;
-  }
+    // Optional field containing a flag to state whether ValueSet is current or not
+    optional bool is_current = 6;
 }
 
 
 message ValueSetRequest {
     // What ValueSet to read. If the viewer doesn't have access to the ValueSet or the
     // ValueSet has been deleted, the response will be empty but will succeed.
-    optional string accession_id = 1;
-    optional string value = 2;
-    optional bool is_current = 3;
-
-    optional ValueSetRequestOptions params = 4;
+    optional string accession_id   = 1;
+    optional bool   use_noncurrent = 2;
 }
 
 
 service ValueSet {
-    rpc GetValueSetByAccessionId (ValueSetRequest) returns (ValueSetList);
-    rpc GetValueSetsByValue (ValueSetRequest) returns (ValueSetList);
-    rpc GetValueSetsByDomain (ValueSetRequest) returns (ValueSetList);
+    rpc GetValueSetByAccessionId (ValueSetRequest) returns (ValueSetItem);
+    rpc GetValueSetsByTopic (ValueSetRequest) returns (stream ValueSetItem);
     rpc GetAllValueSets (ValueSetRequest) returns (stream ValueSetItem);
 }

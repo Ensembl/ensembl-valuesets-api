@@ -15,8 +15,8 @@
 """Ensembl ValueSets client example."""
 
 import grpc
-from src.grpcapi.ensembl.valuesets.valuesets_pb2 import ValueSetRequest
-from src.grpcapi.ensembl.valuesets.valuesets_pb2_grpc import ValueSetStub
+from grpcapi.ensembl.valuesets.valuesets_pb2 import ValueSetRequest
+from grpcapi.ensembl.valuesets.valuesets_pb2_grpc import ValueSetStub
 
 from typer import Typer
 
@@ -31,7 +31,7 @@ def init_client():
 @client_app.command()
 def get_ok():
     client = init_client()
-    request = ValueSetRequest(accession_id="mane.select")
+    request = ValueSetRequest(accession_id="mane.select.1")
     print(client.GetValueSetByAccessionId(request))
 
 
@@ -50,23 +50,12 @@ def get_vs_by_accession(accession_id: str):
 
 
 @client_app.command()
-def get_vs_by_value(value: str, is_current: bool = True):
+def get_vs_by_topic(topic: str, noncurrent: bool = False):
     client = init_client()
-    request = ValueSetRequest(value=value, is_current=is_current)
-    vsets = client.GetValueSetsByValue(request).valuesets
-    print(f"Returned {len(vsets)} ValueSets")
-    for vv in vsets:
-        print(f"{vv.accession_id} - {vv.is_current}")
-
-
-@client_app.command()
-def get_vs_by_domain(domain: str, is_current: bool = True):
-    client = init_client()
-    request = ValueSetRequest(accession_id=domain, is_current=is_current)
-    vsets = client.GetValueSetsByDomain(request).valuesets
-    print(f"Returned {len(vsets)} ValueSets")
-    for vv in vsets:
-        print(f"{vv.accession_id} - {vv.is_current}")
+    request = ValueSetRequest(accession_id=topic, use_noncurrent=noncurrent)
+    for vv in client.GetValueSetsByTopic(request):
+        is_curr = "Current" if vv.is_current else "Not current"
+        print(f"{vv.accession_id} - {is_curr}")
 
 
 if __name__ == "__main__":
