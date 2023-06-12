@@ -36,7 +36,7 @@ import logging
 from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
 
 
-def read_xlsx(filename: Path, sheet_name: str = "Master") -> dict[str, tuple]:
+def read_xlsx(filename: Path, sheet_name: str = "Sheet1") -> dict[str, tuple]:
     """Reads data from an Excel spreadsheet (one named sheet),
     and creates a dictionary out of these.
 
@@ -87,6 +87,7 @@ def dump_data_to_json(data: dict, out_filename: Path = Path("out.json")):
     Returns:
         None
     """
+    logging.info("Called dump_data_to_json for file %s", out_filename)
     with open(out_filename, "wt") as fh:
         json.dump(data, fh, indent=4)
 
@@ -94,7 +95,7 @@ def dump_data_to_json(data: dict, out_filename: Path = Path("out.json")):
 def main():
     parser = ArgumentParser(formatter_class=ArgumentDefaultsHelpFormatter)
     parser.add_argument("filename", help="Input Excel workbook filename")
-    parser.add_argument("-s", "--sheet", default="Master", help="Input Excel sheet (default: Master)")
+    parser.add_argument("-s", "--sheet", default="Sheet1", help="Input Excel sheet (default: Sheet1)")
     parser.add_argument(
         "-o", "--out-filename", default="valuesets.json", help="Output JSON filename (default: out.json)"
     )
